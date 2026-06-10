@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-import { useMidiStore } from "../../../store/midiStore";
-import { parseMidi } from "../../../services/midiParser";
-import { analyzeSong } from "../../../services/songAnalyzer";
-import { generateLesson } from "../../../services/lessonGenerator";
-import { createInteractiveLesson } from "../../../services/interactiveLessonEngine";
-import { initializeAudio, playMidi, pauseMidi, stopMidi, getCurrentTime } from "../../../services/playbackEngine";
+import { useMidiStore } from "../store/midiStore";
+import { parseMidi } from "../services/midiParser";
+import { analyzeSong } from "../services/songAnalyzer";
+import { generateLesson } from "../services/lessonGenerator";
+import { createInteractiveLesson } from "../services/interactiveLessonEngine";
+import { initializeAudio, playMidi, pauseMidi, stopMidi, getCurrentTime } from "../services/playbackEngine";
 import PianoKeyboard from "../components/piano/PianoKeyboard";
 
 export default function Upload() {
