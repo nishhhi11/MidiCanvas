@@ -1,5 +1,5 @@
-import playbackEngine from "../../services/playbackEngine";
-import usePlaybackStore from "../../store/usePlaybackStore";
+import playbackEngine from "../../../../services/playbackEngine";
+import usePlaybackStore from "../../../../store/usePlaybackStore";
 
 export default function PlaybackControls({
     notes = [],
@@ -14,26 +14,26 @@ export default function PlaybackControls({
     const handlePlay = async () => {
         if (!notes.length) return;
 
-await playbackEngine.start();
+        await playbackEngine.start();
 
-playbackEngine.loadNotes(notes);
+        playbackEngine.loadNotes(notes);
 
-playbackEngine.play();
+        playbackEngine.play();
 
-play();
+        play();
 
     };
 
     const handlePause = () => {
         playbackEngine.stop();
 
-pause();
+        pause();
 
     };
 
     const handleStop = () => {
         playbackEngine.stop();
-stop();
+        stop();
 
     };
 
@@ -69,5 +69,5 @@ stop();
         </p>
     </div>
 
-);
+    );
 }

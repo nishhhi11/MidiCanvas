@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
-import { useMidiStore } from "../store/midiStore";
-import { parseMidi } from "../services/midiParser";
-import { analyzeSong } from "../services/songAnalyzer";
-import { generateLesson } from "../services/lessonGenerator";
-import { createInteractiveLesson } from "../services/interactiveLessonEngine";
-import { initializeAudio, playMidi, pauseMidi, stopMidi, getCurrentTime } from "../services/playbackEngine";
+import { useMidiStore } from "../../../store/midiStore";
+import { parseMidi } from "../../../services/midiParser";
+import { analyzeSong } from "../../../services/songAnalyzer";
+import { generateLesson } from "../../../services/lessonGenerator";
+import { createInteractiveLesson } from "../../../services/interactiveLessonEngine";
+import { initializeAudio, playMidi, pauseMidi, stopMidi, getCurrentTime } from "../../../services/playbackEngine";
 import PianoKeyboard from "../components/piano/PianoKeyboard";
 
 export default function Upload() {
-  const { 
-    setMidiFile, midiData, setMidiData, setIsParsing, 
+  const {
+    setMidiFile, midiData, setMidiData, setIsParsing,
     analysis, setAnalysis,
     lesson, setLesson,
     currentTime, setCurrentTime,
@@ -77,33 +77,33 @@ export default function Upload() {
           {midiData && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-10">
               <h2 className="text-2xl font-bold mb-6">MIDI Analysis</h2>
-              
+
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Song Title</p>
                   <p className="font-semibold mt-1">{midiData.title}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Tempo</p>
                   <p className="font-semibold mt-1">{Math.round(midiData.tempo)} BPM</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Duration</p>
                   <p className="font-semibold mt-1">{Math.round(midiData.duration)}s</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Track Count</p>
                   <p className="font-semibold mt-1">{midiData.tracks}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Note Count</p>
                   <p className="font-semibold mt-1">{midiData.noteCount}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Time Signature</p>
                   <p className="font-semibold mt-1">{midiData.timeSignature.join('/')}</p>
@@ -115,23 +115,23 @@ export default function Upload() {
           {analysis && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-10">
               <h2 className="text-2xl font-bold mb-6">Song Difficulty Analysis</h2>
-              
+
               <div className="grid md:grid-cols-4 gap-4">
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Difficulty</p>
                   <p className="font-bold text-xl mt-1 text-orange-500">{analysis.difficulty}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Overall Score</p>
                   <p className="font-semibold text-lg mt-1">{analysis.difficultyScore} / 10</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Notes Per Second</p>
                   <p className="font-semibold text-lg mt-1">{analysis.notesPerSecond}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Tempo Penalty</p>
                   <p className="font-semibold text-lg mt-1">+{analysis.tempoScore}</p>
@@ -143,9 +143,9 @@ export default function Upload() {
           {midiData && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-10">
               <h2 className="text-2xl font-bold mb-6">Playback Controls</h2>
-              
+
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={async () => {
                     console.log("Playing MIDI");
                     await initializeAudio();
@@ -156,8 +156,8 @@ export default function Upload() {
                 >
                   ▶ Play
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     console.log("Paused MIDI");
                     pauseMidi();
@@ -167,8 +167,8 @@ export default function Upload() {
                 >
                   ⏸ Pause
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     console.log("Stopped MIDI");
                     stopMidi();
@@ -204,7 +204,7 @@ export default function Upload() {
           {lessonEngine && (
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-10">
               <h2 className="text-2xl font-bold mb-6">Interactive Lesson</h2>
-              
+
               <div className="bg-black border border-zinc-800 rounded-xl p-6 mb-6">
                 <p className="text-zinc-400 text-sm mb-2">Current Lesson Step</p>
                 <p className="font-semibold text-xl text-orange-500">Step 1: Right Hand Practice</p>
@@ -215,12 +215,12 @@ export default function Upload() {
                   <p className="text-zinc-400 text-sm">Current Note</p>
                   <p className="font-bold text-3xl mt-2">{lessonEngine.getCurrentNote()?.name || "-"}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Next Note</p>
                   <p className="font-semibold text-xl mt-2 text-zinc-500">{lessonEngine.getNextNote()?.name || "-"}</p>
                 </div>
-                
+
                 <div className="bg-black border border-zinc-800 rounded-xl p-4">
                   <p className="text-zinc-400 text-sm">Progress</p>
                   <p className="font-semibold text-xl mt-2">
@@ -233,14 +233,14 @@ export default function Upload() {
                 <p className="text-zinc-400 text-sm mb-2">
                   Target Note: <span className="font-bold text-orange-500">{lessonEngine.getCurrentNote()?.name || "-"}</span>
                 </p>
-                <PianoKeyboard 
-                  currentNote={lessonEngine.getCurrentNote()} 
-                  nextNote={lessonEngine.getNextNote()} 
+                <PianoKeyboard
+                  currentNote={lessonEngine.getCurrentNote()}
+                  nextNote={lessonEngine.getNextNote()}
                 />
               </div>
 
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={() => {
                     lessonEngine.advanceLesson();
                     setEngineUpdate(prev => prev + 1);
@@ -249,8 +249,8 @@ export default function Upload() {
                 >
                   Advance Lesson
                 </button>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     lessonEngine.resetLesson();
                     setEngineUpdate(prev => prev + 1);
