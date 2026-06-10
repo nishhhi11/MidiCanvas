@@ -1,28 +1,57 @@
-export default function PianoKeyboard({ currentNote, nextNote }) {
-    const whiteKeys = [
-        "C4", "D4", "E4", "F4", "G4", "A4", "B4",
-        "C5", "D5", "E5", "F5", "G5", "A5", "B5"
-    ];
+import { KEY_MAP, getNotePosition } from "./keyMap";
+import WhiteKey from "./WhiteKey";
+import BlackKey from "./BlackKey";
+import { useMidiStore } from "../../store/midiStore";
+import { inputManager } from "../../services/inputManager";
 
-    return (
-        <div className="flex h-32 rounded-xl overflow-hidden border border-zinc-800">
-            {whiteKeys.map((key, index) => {
-                const isCurrent = currentNote && currentNote.name === key;
-                const isNext = nextNote && nextNote.name === key;
-                
-                let bgClass = "bg-white text-black";
-                if (isCurrent) bgClass = "bg-orange-500 text-black";
-                else if (isNext) bgClass = "bg-orange-200 text-black";
+export default function PianoKeyboard({ currentNotes = [] }) {
+  const { playedNotes } = useMidiStore();
+  
+  // Convert array of active note objects to a Set of note names for fast lookup
+  const activeNoteSet = new Set(currentNotes.map(n => n.name));
 
-                return (
-                    <div
-                        key={index}
-                        className={`flex-1 border-r border-zinc-400 flex items-end justify-center pb-2 font-semibold transition-colors ${bgClass}`}
-                    >
-                        {key}
-                    </div>
-                );
-            })}
-        </div>
-    );
+  const handleMouseDown = (note) => {
+    inputManager.handleNoteOn(note);
+  };
+
+  const handleMouseUp = (note) => {
+    inputManager.handleNoteOff(note);
+  };
+
+  return (
+    <div className="relative h-32 w-full rounded-xl overflow-hidden border border-zinc-800 bg-black">
+      {KEY_MAP.map((keyData, index) => {
+        const isActive = activeNoteSet.has(keyData.note);
+        const position = getNotePosition(keyData.note);
+
+        if (!position) return null;
+
+        if (keyData.type === "white") {
+          return (
+            <WhiteKey
+              key={index}
+              note={keyData.note}
+              left={position.left}
+              width={position.width}
+              isActive={isActive}
+              onMouseDown={() => handleMouseDown(keyData.note)}
+              onMouseUp={() => handleMouseUp(keyData.note)}
+            />
+          );
+        } else {
+          return (
+            <BlackKey
+              key={index}
+              note={keyData.note}
+              left={position.left}
+              width={position.width}
+              isActive={isActive}
+              onMouseDown={() => handleMouseDown(keyData.note)}
+              onMouseUp={() => handleMouseUp(keyData.note)}
+            />
+          );
+        }
+      })}
+    </div>
+  );
 }

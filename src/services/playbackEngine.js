@@ -1,29 +1,11 @@
 import * as Tone from "tone";
-
-let synth = null;
+import { initializeAudioEngine, getSynth, stopAllAudio } from "./audioEngine";
 
 export async function initializeAudio() {
-  // Browsers require a user interaction to start audio. 
-  // Calling Tone.start() resumes the AudioContext.
-  await Tone.start();
-  
-  if (!synth) {
-    // PolySynth allows playing multiple notes simultaneously (chords)
-    synth = new Tone.PolySynth(Tone.Synth, {
-      envelope: {
-        attack: 0.02,
-        decay: 0.1,
-        sustain: 0.3,
-        release: 1,
-      }
-    }).toDestination();
-    
-    // Lower volume slightly to prevent clipping on dense MIDI files
-    synth.volume.value = -8; 
-  }
+  await initializeAudioEngine();
 }
-
 export function playMidi(notes) {
+  const synth = getSynth();
   if (!synth) {
     console.warn("Audio not initialized. Ensure initializeAudio() is called first.");
     return;
@@ -35,8 +17,6 @@ export function playMidi(notes) {
   // Schedule every note onto the Transport timeline
   notes.forEach((note) => {
     Tone.Transport.schedule((time) => {
-      // Trigger the note at the precisely scheduled `time`
-      // note.name = "C4", note.duration = 0.5s, velocity is scaled slightly
       synth.triggerAttackRelease(note.name, note.duration, time, note.velocity || 0.7);
     }, note.time);
   });
@@ -50,18 +30,23 @@ export function pauseMidi() {
 }
 
 export function stopMidi() {
-  // Stop the timeline progression
   Tone.Transport.stop();
-  
-  // Wipe all scheduled future events
   Tone.Transport.cancel();
-  
-  // Immediately silence any notes currently ringing out
-  if (synth) {
-    synth.releaseAll();
-  }
+  stopAllAudio();
+}
+
+export function setPlaybackSpeed(speed) {
+  Tone.Transport.playbackRate = speed;
+}
+
+export function resumeMidi() {
+  Tone.Transport.start();
 }
 
 export function getCurrentTime() {
   return Tone.Transport.seconds;
+}
+
+export function seek(time) {
+  Tone.Transport.seconds = time;
 }

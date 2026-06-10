@@ -1,56 +1,83 @@
-import Playhead from "./Playhead";
+import { useState, useEffect, useRef } from "react";
+import FallingNotes from "./FallingNotes";
+import PianoKeyboard from "./PianoKeyboard";
+import { generatePianoRollData } from "../../services/pianoRollGenerator";
+import { KEY_MAP } from "./keyMap";
+import { useMidiStore } from "../../store/midiStore";
+import { inputManager } from "../../services/inputManager";
 
-export default function PianoRoll({ notes = [] }) {
-    if (!notes.length) {
-        return null;
+const PIXELS_PER_SECOND = 150;
+
+export default function PianoRoll({ rawNotes, currentTime }) {
+  const [rollData, setRollData] = useState(null);
+  
+  // Process the raw MIDI notes into render-ready data once
+  useEffect(() => {
+    if (rawNotes && rawNotes.length > 0) {
+      setRollData(generatePianoRollData(rawNotes));
     }
+  }, [rawNotes]);
 
-    const minMidi = Math.min(...notes.map((n) => n.midi));
-    const maxMidi = Math.max(...notes.map((n) => n.midi));
-    const range = maxMidi - minMidi || 1;
+  // Determine which keys are currently "hitting" the line from playback
+  let playbackActiveNotes = [];
+  if (rollData && rollData.notes) {
+    playbackActiveNotes = rollData.notes.filter(n => currentTime >= n.startTime && currentTime <= n.endTime);
+  }
 
-    return (<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"> <h2 className="text-2xl font-bold mb-4">
-        Piano Roll </h2>
+  // Handle computer keyboard input synced to global store
+  const { playedNotes } = useMidiStore();
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.repeat) return; // Prevent browser key repeat spam
+      const key = e.key.toUpperCase();
+      const mappedKey = KEY_MAP.find(k => k.pcKey === key);
+      
+      if (mappedKey) {
+        inputManager.handleNoteOn(mappedKey.note);
+      }
+    };
 
-        ```
-        <div className="overflow-x-auto">
-            <div
-                className="relative bg-black rounded-lg"
-                style={{
-                    width: "4000px",
-                    height: "500px",
-                }}
-            >
-                {/* Grid */}
-                {Array.from({ length: 30 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute top-0 bottom-0 border-l border-zinc-800"
-                        style={{
-                            left: `${i * 150}px`,
-                        }}
-                    />
-                ))}
+    const handleKeyUp = (e) => {
+      const key = e.key.toUpperCase();
+      const mappedKey = KEY_MAP.find(k => k.pcKey === key);
+      
+      if (mappedKey) {
+        inputManager.handleNoteOff(mappedKey.note);
+      }
+    };
 
-                <Playhead />
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
-                {notes.map((note, index) => (
-                    <div
-                        key={index}
-                        className="absolute rounded-sm bg-gradient-to-r from-cyan-400 to-blue-500 shadow-md shadow-cyan-500/30"
-                        style={{
-                            left: note.time * 60,
-                            top:
-                                450 -
-                                ((note.midi - minMidi) / range) * 400,
-                            width: Math.max(note.duration * 80, 6),
-                            height: 10,
-                        }}
-                    />
-                ))}
-            </div>
-        </div>
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  // Merge playback active notes and manual active notes for the UI
+  const allActiveNoteObjects = [
+    ...playbackActiveNotes.map(n => ({ name: n.note })),
+    ...Array.from(playedNotes).map(n => ({ name: n }))
+  ];
+
+  return (
+    <div className="flex flex-col w-full">
+      {/* Falling Notes Area */}
+      {rollData && (
+        <FallingNotes 
+          notes={rollData.notes} 
+          currentTime={currentTime} 
+          PIXELS_PER_SECOND={PIXELS_PER_SECOND}
+        />
+      )}
+      
+      {/* Hit Line */}
+      <div className="h-1 w-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)] z-10" />
+
+      {/* Keyboard */}
+      <PianoKeyboard currentNotes={allActiveNoteObjects} />
     </div>
-
-);
+  );
 }
