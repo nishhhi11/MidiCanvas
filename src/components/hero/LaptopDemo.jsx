@@ -60,7 +60,7 @@ export default function LaptopDemo() {
                             </p>
 
                             <h2 className="mt-3 text-4xl font-bold text-white">
-                                Fur Elise
+                                Tum Hi Ho
                             </h2>
 
                             <p className="mt-3 text-zinc-400">

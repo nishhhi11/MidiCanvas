@@ -12,7 +12,6 @@ import Footer from "./components/layout/Footer";
 import Hero from "./components/hero/Hero";
 import Features from "./components/sections/Features";
 import SongLibrary from "./components/sections/SongLibrary";
-import Testimonials from "./components/sections/Testimonials";
 import Pricing from "./components/sections/Pricing";
 import CTA from "./components/sections/CTA";
 
@@ -25,16 +24,24 @@ import Learn from "./pages/Learn";
 import Practice from "./pages/Practice";
 import Profile from "./pages/Profile";
 
+import HowItWorks from "./components/sections/HowItWorks";
+import MouseGlow from "./components/effects/MouseGlow";
+import FloatingNotes from "./components/effects/FloatingNotes";
+import BackgroundEffects from "./components/effects/BackgroundEffects";
+
 function LandingPage() {
   return (
-    <div className="bg-black min-h-screen text-white">
+    <div className="bg-transparent min-h-screen text-white">
+      <BackgroundEffects />
+      <MouseGlow />
+      <FloatingNotes />
       <Navbar />
 
       <main>
         <Hero />
         <Features />
+        <HowItWorks />
         <SongLibrary />
-        <Testimonials />
         <Pricing />
         <CTA />
       </main>

@@ -99,6 +99,28 @@ export default function HeroContent() {
                     Watch Demo
                 </motion.button>
             </motion.div>
+
+            <motion.div variants={item}>
+                <div className="flex flex-wrap justify-center gap-6 mt-12">
+                  {[
+                    { value: "🎹 50K+", label: "Lessons Generated" },
+                    { value: "🎵 10K+", label: "Songs Available" },
+                    { value: "🤖 AI", label: "Smart Feedback" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="px-6 py-4 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10"
+                    >
+                      <h3 className="text-2xl font-bold text-white">
+                        {item.value}
+                      </h3>
+                      <p className="text-gray-400 text-sm mt-1">
+                        {item.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+            </motion.div>
         </motion.div>
     );
 }

@@ -43,7 +43,7 @@ export default function Pricing() {
     return (
         <section
             id="pricing"
-            className="py-40 px-6 bg-black"
+            className="py-40 px-6 bg-transparent"
         >
             <div className="max-w-7xl mx-auto">
 
@@ -76,9 +76,10 @@ export default function Pricing() {
                                 transition-all
                                 duration-300
                                 hover:-translate-y-2
+                                backdrop-blur-xl
                                 ${plan.highlighted
-                                    ? "border-green-500 bg-green-500/5"
-                                    : "border-zinc-800 bg-zinc-950"
+                                    ? "border-green-500 bg-green-500/10"
+                                    : "border-white/10 bg-white/5"
                                 }
                             `}
                         >

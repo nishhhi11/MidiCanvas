@@ -27,7 +27,7 @@ export default function Features() {
     return (
         <section
             id="features"
-            className="relative py-40 px-6 bg-black"
+            className="relative py-40 px-6 bg-transparent"
         >
             <div className="max-w-7xl mx-auto">
 
@@ -69,7 +69,7 @@ export default function Features() {
                                 y: -10,
                                 scale: 1.03,
                             }}
-                            className="group rounded-3xl border border-zinc-800 bg-zinc-950 p-10 hover:border-blue-500/40 transition-all duration-300"
+                            className="group rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 hover:border-blue-500/40 transition-all duration-300"
                         >
                             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 mb-6" />
 
