@@ -76,7 +76,7 @@ export default function HeroSection() {
             <div className="flex gap-4 mb-12 relative z-10">
                 <button 
                     onClick={() => navigate("/studio")}
-                    className="px-8 py-4 rounded-xl text-[#050505] bg-[#FFFFF0] font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden ivory-glow"
+                    className="px-8 py-4 rounded-xl text-[#050505] bg-[#FFFFF0] text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 group relative overflow-hidden ivory-glow"
                 >
                     <span className="relative z-10 flex items-center gap-2">🎹 Launch Interactive Workspace</span>
                 </button>
