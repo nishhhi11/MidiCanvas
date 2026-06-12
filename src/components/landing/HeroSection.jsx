@@ -65,7 +65,7 @@ export default function HeroSection() {
             <div className="absolute top-40 right-20 text-[150px] opacity-[0.03] blur-[2px] rotate-[15deg] pointer-events-none z-0 select-none">🎹</div>
             <div className="absolute bottom-40 left-1/4 text-[100px] opacity-[0.03] blur-[2px] rotate-[-20deg] pointer-events-none z-0 select-none">🎹</div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight relative z-10 max-w-5xl">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight relative z-10 max-w-5xl">
                 MIDI Canvas — Parse, Edit, and Learn Piano from Any MIDI File
             </h1>
 

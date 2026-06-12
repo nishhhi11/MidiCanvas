@@ -101,8 +101,8 @@ export default function LibraryPage() {
                     <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#FFFFF0]/10 pb-8">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <span className="text-3xl">💾</span>
-                                <h1 className="text-3xl font-black tracking-tight text-[#FFFFF0]">
+                                <span className="text-xl">💾</span>
+                                <h1 className="text-xl font-bold tracking-tight text-[#FFFFF0]">
                                     My MIDI Library
                                 </h1>
                             </div>

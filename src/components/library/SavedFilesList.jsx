@@ -12,7 +12,7 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
           <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,255,255,0.02)] border border-white/10">
             <Mailbox size={32} className="text-zinc-500" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">No saved projects yet</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">No saved projects yet</h2>
           <p className="text-zinc-400 max-w-md mb-8 text-base">
             Your saved MIDI projects will appear here. Head over to the piano roll editor to import and save your first track!
           </p>
