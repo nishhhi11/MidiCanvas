@@ -172,6 +172,7 @@ export default function EditorPage() {
       );
     } catch (err) {
       console.error(err);
+      alert("Failed to parse MIDI file. If the local server disconnected, please refresh the page and try again.");
     } finally {
       setIsParsing(false);
     }
@@ -220,8 +221,11 @@ export default function EditorPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
   
-  // Virtual piano keys for preview
-  const virtualPianoKeys = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+  const virtualPianoKeys = [
+    'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
+    'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+    'C5'
+  ];
   
   const hasMIDILoaded = !!uploadedFile;
   const isPlaying = playbackState === 'playing';
@@ -537,10 +541,10 @@ export default function EditorPage() {
           {/* Black Keys */}
           <div className="absolute top-0 left-0 w-full h-2/3 pointer-events-none">
             {virtualPianoKeys.map((note, globalIdx) => {
-              const isBlackKey = [1, 3, 6, 8, 10].includes(globalIdx % 12);
+              const isBlackKey = note.includes('#');
               if (!isBlackKey) return null;
               
-              const whiteKeyIdx = virtualPianoKeys.slice(0, globalIdx).filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).length;
+              const whiteKeyIdx = virtualPianoKeys.slice(0, globalIdx).filter(k => !k.includes('#')).length;
               const totalWhiteKeys = 15; // C3 to C5
               const leftPercent = (whiteKeyIdx / totalWhiteKeys) * 100;
               const widthPercent = (1 / totalWhiteKeys) * 60; // 60% of white key width
@@ -620,33 +624,47 @@ export default function EditorPage() {
                    const isMuted = mutedTracks.has(track.id);
                    const isSoloed = soloedTracks.has(track.id);
                    return (
-                    <div key={track.id || idx} className="flex items-center justify-between text-base">
-                      <div className="flex items-center gap-1">
-                        
-                        <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
-                          <input 
-                            type="color" 
-                            value={color} 
-                            onChange={(e) => setTrackColor(track.id, e.target.value)}
-                            className="absolute -inset-2 w-8 h-8 cursor-pointer"
-                          />
-                        </div>
+                    <div key={track.id || idx} className="flex flex-col mb-2">
+                      <div className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-1">
+                          
+                          <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
+                            <input 
+                              type="color" 
+                              value={color} 
+                              onChange={(e) => setTrackColor(track.id, e.target.value)}
+                              className="absolute -inset-2 w-8 h-8 cursor-pointer"
+                            />
+                          </div>
 
-                        <span className="text-[#FFFFF0] truncate max-w-[60px]">{track.name || `Track ${track.id + 1}`}</span>
+                          <span className="text-[#FFFFF0] truncate max-w-[60px]">{track.name || `Track ${track.id + 1}`}</span>
+                        </div>
+                        <div className="flex gap-1">
+                          <button 
+                            onClick={() => toggleMute(track.id)}
+                            className={`w-7 h-7 rounded text-xs text-base ${isMuted ? 'bg-red-900/50 text-red-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
+                          >
+                            M
+                          </button>
+                          <button 
+                            onClick={() => toggleSolo(track.id)}
+                            className={`w-7 h-7 rounded text-xs text-base ${isSoloed ? 'bg-yellow-900/50 text-yellow-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
+                          >
+                            S
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex gap-1">
-                        <button 
-                          onClick={() => toggleMute(track.id)}
-                          className={`w-7 h-7 rounded text-xs text-base ${isMuted ? 'bg-red-900/50 text-red-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
-                        >
-                          M
-                        </button>
-                        <button 
-                          onClick={() => toggleSolo(track.id)}
-                          className={`w-7 h-7 rounded text-xs text-base ${isSoloed ? 'bg-yellow-900/50 text-yellow-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
-                        >
-                          S
-                        </button>
+                      <div className="flex items-center gap-2 mt-1 px-1">
+                        <span className="text-[9px] text-[#888888] w-6">VOL</span>
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="1" 
+                          step="0.01" 
+                          value={trackVolumes[track.id] !== undefined ? trackVolumes[track.id] : 1.0} 
+                          onChange={(e) => setTrackVolume(track.id, parseFloat(e.target.value))} 
+                          className="flex-1 h-0.5 bg-[#1a1a1a] rounded-lg appearance-none cursor-pointer accent-[#D4C5A9]"
+                        />
                       </div>
                     </div>
                    )
