@@ -16,16 +16,14 @@ export default function LibraryPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("date");
 
-    // Metrics
     const totalFiles = savedFiles.length;
     const totalSizeMB = (savedFiles.reduce((acc, f) => acc + (f.size || 0), 0) / (1024 * 1024)).toFixed(2);
     const totalNotes = savedFiles.reduce((acc, f) => acc + (f.noteCount || 0), 0);
     const lastBackup = savedFiles.length > 0 ? new Date(Math.max(...savedFiles.map(f => f.uploadedAt))).toLocaleDateString() : "Never";
 
-    // Filtering and Sorting
     const filteredFiles = useMemo(() => {
         let files = [...savedFiles];
-        
+
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             files = files.filter(f => f.name.toLowerCase().includes(query));
@@ -82,7 +80,7 @@ export default function LibraryPage() {
     };
 
     const triggerUpload = () => {
-        // Simple way to route to studio and auto-open file picker
+
         navigate("/studio");
     };
 
@@ -93,8 +91,7 @@ export default function LibraryPage() {
 
             <main className="flex-1 overflow-y-auto pb-32 pt-28 px-6 relative z-10">
                 <div className="max-w-[1400px] mx-auto space-y-8">
-                    
-                    {/* Header */}
+
                     <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#FFFFF0]/10 pb-8">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
@@ -114,7 +111,6 @@ export default function LibraryPage() {
                         </button>
                     </header>
 
-                    {/* Search & Filter Bar */}
                     {savedFiles.length > 0 && (
                         <div className="flex items-center gap-4 glass-panel p-2 rounded-xl">
                             <div className="relative flex-1">
@@ -155,7 +151,6 @@ export default function LibraryPage() {
                 </div>
             </main>
 
-            {/* Status Bar */}
             <div className="fixed bottom-0 left-0 w-full glass-panel border-b-0 border-x-0 z-50">
                 <div className="max-w-[1400px] mx-auto px-6 h-8 flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-[#999999]">
                     <div className="flex items-center gap-6">

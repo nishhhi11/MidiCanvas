@@ -75,7 +75,7 @@ export default function FeaturesSection() {
     return (
         <section className="py-24 px-6 max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-text-main text-center mb-20 tracking-tight">🎹 What Makes MIDI Canvas Powerful</h2>
-            
+
             <div className="space-y-24">
                 {featureGroups.map((group, groupIndex) => (
                     <div key={groupIndex}>

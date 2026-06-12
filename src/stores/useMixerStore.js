@@ -22,7 +22,7 @@ export const useMixerStore = create((set) => ({
   }),
 
   setMasterVolume: (volume) => set({ masterVolume: volume }),
-  
+
   setTrackVolume: (trackId, volume) => set((state) => ({
     trackVolumes: { ...state.trackVolumes, [trackId]: volume }
   })),

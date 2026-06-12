@@ -20,7 +20,7 @@ export default function CTASection() {
         accept: {
             'audio/midi': ['.mid', '.midi']
         },
-        noClick: true // Only allow drag and drop here, click is on the button
+        noClick: true 
     });
 
     return (
@@ -30,11 +30,11 @@ export default function CTASection() {
                 ${isDragActive ? 'bg-white/[0.02] scale-[1.01]' : 'bg-transparent'}`}
         >
             <input {...getInputProps()} />
-            
+
             <div className="max-w-4xl mx-auto glass-strong p-16 rounded-[40px] relative z-10 animate-border-glow overflow-hidden">
-                {/* Internal gradient sweep effect */}
+
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-zinc-500/5 opacity-50 pointer-events-none" />
-                
+
                 <div className="text-5xl mb-8 animate-float relative z-10">🎹</div>
                 <h2 className="text-4xl md:text-5xl font-bold text-text-main mb-6 relative z-10">
                     Ready to dive into your MIDI files?
@@ -62,8 +62,7 @@ export default function CTASection() {
                     </p>
                 </div>
             </div>
-            
-            {/* Ambient Background Glow */}
+
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-white/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
         </section>
     );

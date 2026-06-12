@@ -1,7 +1,4 @@
-/**
- * MixerPanel.jsx
- * Track inspector: mute / solo / volume / color picker per track.
- */
+
 import { Settings } from 'lucide-react';
 import { getTrackColor } from '../../utils/colors';
 

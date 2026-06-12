@@ -10,7 +10,7 @@ export default function HeroSection() {
     const [particles, setParticles] = useState([]);
 
     useEffect(() => {
-        // Generate random particles for the background
+
         const generatedParticles = Array.from({ length: 30 }).map((_, i) => ({
             id: i,
             left: `${Math.random() * 100}%`,
@@ -38,7 +38,7 @@ export default function HeroSection() {
 
     return (
         <section className="pt-40 pb-20 px-6 max-w-7xl mx-auto text-center flex flex-col items-center relative overflow-hidden min-h-screen">
-            {/* 1. Soft Animated Gradient Background */}
+
             <div 
                 className="absolute inset-0 z-0 animate-float-bg pointer-events-none"
                 style={{
@@ -46,7 +46,6 @@ export default function HeroSection() {
                 }}
             />
 
-            {/* 8. Tiny Particles */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                 {particles.map(p => (
                     <div 
@@ -62,16 +61,14 @@ export default function HeroSection() {
                 ))}
             </div>
 
-            {/* 2. Floating Piano Keys Behind Hero */}
             <div className="absolute top-20 left-10 text-[120px] opacity-[0.03] blur-[2px] rotate-[-10deg] pointer-events-none z-0 select-none">🎹</div>
             <div className="absolute top-40 right-20 text-[150px] opacity-[0.03] blur-[2px] rotate-[15deg] pointer-events-none z-0 select-none">🎹</div>
             <div className="absolute bottom-40 left-1/4 text-[100px] opacity-[0.03] blur-[2px] rotate-[-20deg] pointer-events-none z-0 select-none">🎹</div>
 
-            {/* 6. Hero Typography */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight relative z-10 max-w-5xl">
                 MIDI Canvas — Parse, Edit, and Learn Piano from Any MIDI File
             </h1>
-            
+
             <p className="text-xl text-zinc-400 max-w-2xl mb-12 relative z-10 leading-relaxed">
                 Turn any .mid file into an interactive piano lesson. Visualize notes, edit tracks, and practice at your own pace — entirely in your browser.
             </p>
@@ -85,7 +82,6 @@ export default function HeroSection() {
                 </button>
             </div>
 
-            {/* 3 & 4. Glassmorphism Upload Box & Replace Folder Icon */}
             <div 
                 {...getRootProps()} 
                 className={`w-full max-w-2xl p-12 rounded-2xl cursor-pointer transition-all duration-300 relative z-10 group glass-panel
@@ -118,19 +114,16 @@ export default function HeroSection() {
                 </div>
             </div>
 
-            {/* 7. Real Piano Preview with Falling Notes */}
             <div className="mt-8 mb-16 relative z-10 w-full max-w-2xl flex flex-col items-center opacity-90 select-none">
-                
-                {/* Falling Notes Canvas */}
+
                 <div className="w-full h-48 bg-black/40 rounded-t-xl border border-white/5 relative overflow-hidden backdrop-blur-sm">
-                    {/* Grid lines to match keys */}
+
                     <div className="absolute inset-0 flex w-full h-full pointer-events-none opacity-20">
                         {Array.from({ length: 14 }).map((_, i) => (
                             <div key={`grid-${i}`} className="flex-1 border-r border-white/10 last:border-r-0" />
                         ))}
                     </div>
-                    
-                    {/* Animated Notes */}
+
                     {[
                         { col: 2, delay: 0, h: 40, color: 'bg-purple-500' },
                         { col: 4, delay: 0.5, h: 24, color: 'bg-blue-500' },
@@ -156,17 +149,16 @@ export default function HeroSection() {
                             }}
                         />
                     ))}
-                    
-                    {/* Bottom fade out gradient */}
+
                     <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                 </div>
 
                 <div className="w-full h-1 bg-zinc-800 border-t border-white/20" />
                 <div className="flex w-full h-14 bg-white rounded-b-xl overflow-hidden border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.4)] justify-between px-[2px]">
-                    {/* Render a generic keyboard pattern */}
+
                     {Array.from({ length: 14 }).map((_, i) => (
                         <div key={i} className="relative flex-1 border-r border-zinc-200 last:border-r-0 bg-white h-full hover:bg-zinc-100 transition-colors">
-                            {/* Black Keys (skip on E/B) */}
+
                             {![2, 6, 9, 13].includes(i) && (
                                 <div className="absolute top-0 right-[-50%] w-[60%] h-[65%] bg-zinc-900 rounded-b-sm z-10 border border-black hover:bg-zinc-800 transition-colors shadow-sm" />
                             )}
@@ -175,7 +167,6 @@ export default function HeroSection() {
                 </div>
             </div>
 
-            {/* 5. Add Mini Stats Below CTA */}
             <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm font-medium relative z-10">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-[#FFFFF0]/80 transition-colors hover:text-[#FFFFF0]">
                     <Layers size={14} className="text-[#FFFFF0]/60" />

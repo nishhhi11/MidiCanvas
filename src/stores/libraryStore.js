@@ -13,12 +13,11 @@ export const useLibraryStore = create((set, get) => ({
   fetchSavedFiles: async () => {
     set({ isLoading: true });
     try {
-      // Don't pull the rawData array buffer here to save memory
+
       const files = await db.midiFiles.toArray();
-      // Sort by newest first
+
       files.sort((a, b) => b.uploadedAt - a.uploadedAt);
-      
-      // Remove rawData from state list so it's snappy
+
       const listFiles = files.map(f => ({
         id: f.id,
         name: f.name,
@@ -45,7 +44,7 @@ export const useLibraryStore = create((set, get) => ({
         noteCount: fileMeta.noteCount || 0,
         size: rawData ? rawData.byteLength : 0,
         uploadedAt: Date.now(),
-        rawData // Uint8Array
+        rawData 
       });
       await get().fetchSavedFiles();
       return id;

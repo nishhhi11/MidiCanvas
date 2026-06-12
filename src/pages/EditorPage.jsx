@@ -8,7 +8,6 @@ import { useKeyboardPiano } from "../hooks/useKeyboardPiano";
 import StudioPianoRoll from "../components/editor/PianoRollCanvas";
 import { ErrorBoundary } from "../components/common/ErrorBoundary";
 
-// Real stores
 import { useMidiStore } from "../stores/midiStore";
 import { useMixerStore } from "../stores/useMixerStore";
 import { usePlaybackStore } from "../stores/playbackStore";
@@ -16,7 +15,7 @@ import { useLibraryStore } from "../stores/libraryStore";
 import { triggerCustomAttackRelease, getAudioContextTime } from "../utils/audioEngine";
 
 export default function EditorPage() {
-  // Real stores and controllers mapped to the new UI structure
+
   const { handlePlay, handlePause, handleStop, handleSeek } = usePlaybackController();
   const { setMidiData, setUploadedFile, uploadedFile, midiData, isParsing, setIsParsing, updateMidiMetadata } = useMidiStore();
   const { clearMixer, masterVolume, setMasterVolume, soloedTracks, mutedTracks, trackVolumes, toggleMute, toggleSolo, setTrackVolume, trackColors } = useMixerStore();
@@ -24,15 +23,12 @@ export default function EditorPage() {
   const { activeNotes: playbackActiveNotes } = usePlaybackStore();
   const { activeNotes: keyboardActiveNotes } = useKeyboardPiano();
   const { saveFile } = useLibraryStore();
-  
-  // Local UI state
+
   const [snap, setSnap] = useState('1/16');
   const [highlightKeys, setHighlightKeys] = useState(true);
   const [showNoteNames, setShowNoteNames] = useState(true);
-  
 
   const [activePlayKeys, setActivePlayKeys] = useState(new Set());
-
 
   const [isRecording, setIsRecording] = useState(false);
   const recordingStartTime = useRef(0);
@@ -49,7 +45,7 @@ export default function EditorPage() {
   const toggleRecord = async () => {
      if (isRecording) {
          setIsRecording(false);
-         // flush remaining active notes
+
          activeRecordingNotes.current.forEach((startTime, note) => {
              const duration = (performance.now() - startTime) / 1000;
              const relativeStart = (startTime - recordingStartTime.current) / 1000;
@@ -68,7 +64,7 @@ export default function EditorPage() {
          if (recordedNotes.current.length > 0) {
              const lastNote = recordedNotes.current[recordedNotes.current.length - 1];
              const trackDuration = lastNote.time + lastNote.duration + 1;
-             
+
              const newMidiData = {
                  name: `Recording ${new Date().toLocaleString()}`,
                  tempo: 120,
@@ -104,7 +100,7 @@ export default function EditorPage() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.repeat) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      
+
       const note = KEY_MAP[e.key.toLowerCase()];
       if (note) {
         if (e.type === 'keydown') {
@@ -148,8 +144,7 @@ export default function EditorPage() {
   }, [isRecording]);
 
     const fileInputRef = useRef(null);
-  
-  // File upload handler
+
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -163,7 +158,6 @@ export default function EditorPage() {
       usePlaybackStore.getState().setLoopPoints(0, parsed.duration);
       handleStop();
 
-      // Auto-save to library
       const arrayBuffer = await file.arrayBuffer();
       const rawData = new Uint8Array(arrayBuffer);
       await saveFile(
@@ -177,12 +171,12 @@ export default function EditorPage() {
       setIsParsing(false);
     }
   };
-  
+
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
   };
-  
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
@@ -191,8 +185,7 @@ export default function EditorPage() {
       await handleFileUpload(syntheticEvent);
     }
   };
-  
-  // Global Keyboard Shortcuts
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -214,30 +207,29 @@ export default function EditorPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handlePlay, handlePause]);
 
-  // Format time display
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-  
+
   const virtualPianoKeys = [
     'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
     'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
     'C5'
   ];
-  
+
   const hasMIDILoaded = !!uploadedFile;
   const isPlaying = playbackState === 'playing';
   const tempo = midiData?.tempo || 120;
   const totalTime = midiData?.duration || 0;
-  
+
   const mergedActiveNotes = [...playbackActiveNotes, ...keyboardActiveNotes];
   const filteredNotes = midiData?.notes?.filter(n => {
     if (soloedTracks.size > 0) return soloedTracks.has(n.track);
     return !mutedTracks.has(n.track);
   }) || [];
-  
+
   const totalNotesCount = midiData?.notes?.length || 0;
   const activeVoicesCount = mergedActiveNotes.length;
 
@@ -247,7 +239,7 @@ export default function EditorPage() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      {/* Header - Black with ivory accents */}
+
       <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -271,7 +263,7 @@ export default function EditorPage() {
               ))}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-base text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
               📁 {uploadedFile || 'No file loaded'}
@@ -306,14 +298,12 @@ export default function EditorPage() {
           </div>
         </div>
       </header>
-      
-      {/* Main Content - Flexible area */}
+
       <div className="flex-1 flex min-h-0 p-4 gap-4">
-        
-        {/* Left Panel - Transport (Black with ivory accents) */}
+
         <div className="w-72 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
           <div className="text-base font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
-          
+
           <div className="flex justify-center gap-2 mb-2">
             <button 
               onClick={toggleRecord}
@@ -353,7 +343,7 @@ export default function EditorPage() {
               ⏩
             </button>
           </div>
-          
+
           <button 
             onClick={toggleLoop}
             className={`text-base py-2 rounded-md mb-2 transition-all ${
@@ -364,11 +354,11 @@ export default function EditorPage() {
           >
             🔁 {isLooping ? 'LOOP ACTIVE' : 'LOOP'}
           </button>
-          
+
           <div className="text-center font-mono text-2xl font-bold text-[#D4C5A9] mb-2">
             {formatTime(currentTime)} / {formatTime(totalTime)}
           </div>
-          
+
           <div className="space-y-2">
             <div>
               <div className="text-base text-[#888888] mb-1 flex justify-between">
@@ -398,7 +388,7 @@ export default function EditorPage() {
                 </button>
               </div>
             </div>
-            
+
             <div>
               <div className="text-base text-[#888888] mb-1 flex justify-between">
                 <span>🔊 VOLUME</span>
@@ -416,8 +406,7 @@ export default function EditorPage() {
             </div>
           </div>
         </div>
-        
-        {/* Center Panel - Piano Roll (Real Component) */}
+
         <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col min-w-0 relative">
           <div className="flex justify-between items-center mb-2 flex-shrink-0">
             <div className="text-base font-semibold text-[#888888] uppercase tracking-wide">
@@ -448,7 +437,7 @@ export default function EditorPage() {
               </label>
             </div>
           </div>
-          
+
           <div className="flex-1 overflow-hidden min-h-0 bg-black rounded-lg relative">
             {!hasMIDILoaded ? (
               <div className="absolute inset-0 flex items-center justify-center bg-black/90 rounded-xl z-10">
@@ -485,11 +474,10 @@ export default function EditorPage() {
           </div>
         </div>
       </div>
-      
-      {/* Virtual Piano Strip - Full Width Realistic Layout */}
+
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
         <div className="w-full max-w-6xl relative h-32 select-none">
-          {/* White Keys */}
+
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
               const isActive = activePlayKeys.has(note);
@@ -538,17 +526,16 @@ export default function EditorPage() {
             })}
           </div>
 
-          {/* Black Keys */}
           <div className="absolute top-0 left-0 w-full h-2/3 pointer-events-none">
             {virtualPianoKeys.map((note, globalIdx) => {
               const isBlackKey = note.includes('#');
               if (!isBlackKey) return null;
-              
+
               const whiteKeyIdx = virtualPianoKeys.slice(0, globalIdx).filter(k => !k.includes('#')).length;
-              const totalWhiteKeys = 15; // C3 to C5
+              const totalWhiteKeys = 15; 
               const leftPercent = (whiteKeyIdx / totalWhiteKeys) * 100;
-              const widthPercent = (1 / totalWhiteKeys) * 60; // 60% of white key width
-              
+              const widthPercent = (1 / totalWhiteKeys) * 60; 
+
               const isActive = activePlayKeys.has(note);
               const mappedKey = Object.keys(KEY_MAP).find(k => KEY_MAP[k] === note)?.toUpperCase() || '';
 
@@ -606,11 +593,9 @@ export default function EditorPage() {
         </div>
       </div>
 
-      {/* Bottom Panels - Fixed Height (4-column grid) */}
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black/50 p-3">
         <div className="grid grid-cols-4 gap-3">
-          
-          {/* Mixer - Real tracks from MIDI data */}
+
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
             <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               🎚️ Mixer
@@ -627,7 +612,7 @@ export default function EditorPage() {
                     <div key={track.id || idx} className="flex flex-col mb-2">
                       <div className="flex items-center justify-between text-base">
                         <div className="flex items-center gap-1">
-                          
+
                           <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
                             <input 
                               type="color" 
@@ -678,8 +663,7 @@ export default function EditorPage() {
               </div>
             </div>
           </div>
-          
-          {/* Learning Mode */}
+
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
             <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               🎯 Learning Mode
@@ -739,8 +723,7 @@ export default function EditorPage() {
               </div>
             </div>
           </div>
-          
-          {/* Status - Real data */}
+
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
             <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               📊 Status
@@ -761,8 +744,7 @@ export default function EditorPage() {
               </div>
             )}
           </div>
-          
-          {/* Shortcuts */}
+
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
             <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               ⌨️ Shortcuts
@@ -782,7 +764,6 @@ export default function EditorPage() {
               </div>
             </div>
           </div>
-          
 
         </div>
       </div>

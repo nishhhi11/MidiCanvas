@@ -7,7 +7,7 @@ export default function Playhead({ pixelsPerSecond, containerRef }) {
   useEffect(() => {
     if (!containerRef.current) return;
     const playheadPos = currentTime * pixelsPerSecond;
-    // Continuously scroll the canvas so the playhead stays at the left edge (touching the keyboard)
+
     containerRef.current.scrollLeft = playheadPos;
   }, [currentTime, pixelsPerSecond, containerRef]);
 
@@ -16,7 +16,7 @@ export default function Playhead({ pixelsPerSecond, containerRef }) {
       className="absolute top-0 h-full w-[2px] bg-red-500 z-30 pointer-events-none shadow-[0_0_12px_rgba(255,68,68,0.6)]"
       style={{ 
         left: currentTime * pixelsPerSecond,
-        // Remove CSS transition so it doesn't fight with scrollLeft updates
+
       }}
     />
   );

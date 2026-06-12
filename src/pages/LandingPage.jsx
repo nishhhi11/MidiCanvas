@@ -12,7 +12,7 @@ export default function LandingPage() {
         <div className="min-h-screen bg-bg-primary text-text-main font-sans selection:bg-primary/30 relative">
             <BackgroundAnimations />
             <Navbar />
-            
+
             <main className="relative z-10">
                 <HeroSection />
                 <FeaturesSection />

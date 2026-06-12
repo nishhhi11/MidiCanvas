@@ -9,15 +9,13 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
   });
 
   const durationStr = `${Math.floor(file.duration / 60)}:${Math.floor(file.duration % 60).toString().padStart(2, '0')}`;
-  
-  // Randomly generate a pseudo-preview string for the card
+
   const previewStrips = ["▁▁▃▅▃▂▂▅▇▆▃▂", "▁▂▄▃▂▅▆▃▂▁▃▄▆", "▃▅▇▆▅▃▂▂▃▅▇▆▅", "▂▃▅▆▇▆▅▃▂▂▃▅▆", "▁▃▄▅▆▇▆▅▄▃▁▁▃"];
   const previewStrip = previewStrips[file.id.length % previewStrips.length];
 
   return (
     <div className="bg-[#111] rounded-2xl border border-[#222] overflow-hidden flex flex-col p-5 group relative transition-all duration-300 hover:-translate-y-0.5 hover:border-[#333] hover:shadow-[0_0_20px_rgba(168,85,247,0.1)]">
-      
-      {/* Header */}
+
       <div className="flex items-start justify-between mb-4 relative z-10">
         <div className="flex flex-col gap-2 min-w-0 flex-1">
           <div className="flex items-center gap-2">
@@ -30,7 +28,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
             {file.name}
           </h3>
         </div>
-        
+
         <div className="relative shrink-0">
           <button 
             onClick={() => setMenuOpen(!menuOpen)}
@@ -38,7 +36,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
           >
             <MoreVertical size={16} />
           </button>
-          
+
           {menuOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
@@ -55,7 +53,6 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
         </div>
       </div>
 
-      {/* Body Stats - Hierarchical */}
       <div className="flex flex-col gap-1 mb-6 relative z-10 text-sm font-medium">
         <div className="flex items-center gap-2 text-zinc-300">
           <Activity size={14} className="text-zinc-500" />
@@ -71,7 +68,6 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="mt-auto grid grid-cols-2 gap-2 relative z-10">
         <button
           onClick={() => onLoad(file)}
@@ -81,7 +77,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
           <Edit3 size={16} /> Open Editor
         </button>
         <button
-          onClick={() => onLoad(file)} // For now, Play acts like Edit since playback needs the editor context
+          onClick={() => onLoad(file)} 
           className="col-span-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 font-bold flex items-center justify-center gap-2 text-zinc-300 hover:text-white transition-all border border-[#222]"
           title="Preview"
         >

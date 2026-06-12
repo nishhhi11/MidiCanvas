@@ -6,14 +6,11 @@ export const inputManager = {
     const store = useMidiStore.getState();
     const { playedNotes, setPlayedNotes, registerKeyPress } = store;
 
-    // Add note to globally tracking set
     const nextPlayed = new Set(playedNotes).add(note);
     setPlayedNotes(nextPlayed);
 
-    // Play Audio (Duration 8n as fallback if key released too fast)
     playSingleNote({ note, duration: "8n" });
 
-    // Validate Rhythm Hit Window / Wait Mode
     registerKeyPress(note);
   },
 

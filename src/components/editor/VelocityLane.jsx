@@ -9,8 +9,7 @@ export default function VelocityLane({ rawNotes, duration, pixelsPerSecond, onNo
     e.stopPropagation();
     setIsDragging(true);
     e.target.setPointerCapture(e.pointerId);
-    
-    // Select the note if not selected
+
     if (selectedNoteIds && !selectedNoteIds.has(noteId) && window.setSelectedNoteIds) {
       window.setSelectedNoteIds(new Set([noteId]));
     }
@@ -20,11 +19,10 @@ export default function VelocityLane({ rawNotes, duration, pixelsPerSecond, onNo
     if (!isDragging) return;
     const rect = containerRef.current.getBoundingClientRect();
     const y = e.clientY - rect.top;
-    
-    // Invert Y: 0 is top (velocity 1.0), height is bottom (velocity 0.0)
+
     let newVelocity = 1 - (y / rect.height);
     newVelocity = Math.max(0, Math.min(newVelocity, 1));
-    
+
     onNoteUpdate(noteId, { velocity: newVelocity });
   };
 
@@ -35,7 +33,7 @@ export default function VelocityLane({ rawNotes, duration, pixelsPerSecond, onNo
 
   return (
     <div className="h-24 bg-[#111] border-t border-[#333] relative flex-shrink-0 flex group" ref={containerRef}>
-      {/* Label */}
+
       <div className="absolute top-1 left-2 text-[10px] font-bold text-zinc-600 uppercase tracking-widest pointer-events-none z-10">
         Velocity
       </div>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export const usePlaybackStore = create((set) => ({
-  playbackState: 'stopped', // 'playing' | 'paused' | 'stopped'
+  playbackState: 'stopped', 
   currentTime: 0,
   activeNotes: [],
   isLooping: false,

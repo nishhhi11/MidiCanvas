@@ -3,12 +3,10 @@ import { Midi } from "@tonejs/midi";
 export function exportToMidi(midiData) {
   if (!midiData || !midiData.notes) return;
 
-  // Create a new Midi object
   const midi = new Midi();
 
-  // Set header info
   midi.header.setTempo(midiData.tempo || 120);
-  
+
   if (midiData.timeSignature) {
     const [num, den] = midiData.timeSignature.split("/").map(Number);
     if (!isNaN(num) && !isNaN(den)) {
@@ -19,14 +17,11 @@ export function exportToMidi(midiData) {
     }
   }
 
-  // Create tracks
   const trackMap = {};
-  
-  // Reconstruct tracks based on notes
+
   midiData.notes.forEach(note => {
     const trackIndex = note.track || 0;
-    
-    // Initialize track if it doesn't exist
+
     if (!trackMap[trackIndex]) {
       const track = midi.addTrack();
       const originalTrack = midiData.tracks?.find(t => t.id === trackIndex);
@@ -35,8 +30,7 @@ export function exportToMidi(midiData) {
       }
       trackMap[trackIndex] = track;
     }
-    
-    // Add note to track
+
     trackMap[trackIndex].addNote({
       midi: note.midi,
       time: note.time,
@@ -45,21 +39,18 @@ export function exportToMidi(midiData) {
     });
   });
 
-  // Export to binary
   const binary = midi.toArray();
   const blob = new Blob([binary], { type: "audio/midi" });
-  
-  // Trigger download
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  
-  // Use original filename or generate one
+
   let downloadName = midiData.fileName || "export.mid";
   if (!downloadName.endsWith(".mid") && !downloadName.endsWith(".midi")) {
     downloadName += ".mid";
   }
-  
+
   a.download = downloadName;
   document.body.appendChild(a);
   a.click();
@@ -67,12 +58,11 @@ export function exportToMidi(midiData) {
   URL.revokeObjectURL(url);
 }
 
-
 export function generateMidiBinary(midiData) {
   if (!midiData || !midiData.notes) return null;
   const midi = new Midi();
   midi.header.setTempo(midiData.tempo || 120);
-  
+
   if (midiData.timeSignature) {
     const [num, den] = midiData.timeSignature.split("/").map(Number);
     if (!isNaN(num) && !isNaN(den)) {

@@ -10,10 +10,10 @@ import { triggerCustomAttackRelease, getAudioContextTime } from '../../utils/aud
 
 import { getTrackColor } from '../../utils/colors';
 
-const START_MIDI = 21; // A0
-const END_MIDI = 108; // C8
+const START_MIDI = 21; 
+const END_MIDI = 108; 
 const TOTAL_KEYS = END_MIDI - START_MIDI + 1;
-const BASE_ROW_HEIGHT = 16; // px per note row
+const BASE_ROW_HEIGHT = 16; 
 
 export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, tempo = 120, timeSignature = "4/4", trackColors = {} }) {
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -21,14 +21,14 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
   const [selectedNoteIds, setSelectedNoteIds] = useState(new Set());
   const [snapDivision, setSnapDivision] = useState(0); 
   const [dragLoopState, setDragLoopState] = useState(null); 
-  const [ghostTime, setGhostTime] = useState(null); // For snap-to-grid visuals
+  const [ghostTime, setGhostTime] = useState(null); 
   const [showVelocity, setShowVelocity] = useState(false);
-  const [activeKeys, setActiveKeys] = useState(new Set()); // For vertical keyboard interaction
-  const activePlaybackNotes = usePlaybackStore(state => state.activeNotes); // Get active notes
+  const [activeKeys, setActiveKeys] = useState(new Set()); 
+  const activePlaybackNotes = usePlaybackStore(state => state.activeNotes); 
   const activeNoteIds = new Set(activePlaybackNotes.map(n => n.id));
   const activeNoteMidis = new Set([...activePlaybackNotes.map(n => n.midi), ...activeKeys]);
 
-  const [pointerTime, setPointerTime] = useState(0); // Telemetry overlay support
+  const [pointerTime, setPointerTime] = useState(0); 
   const [isHovering, setIsHovering] = useState(false);
   const containerRef = useRef(null);
   const keyboardRef = useRef(null);
@@ -46,12 +46,12 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     const handleKeyDown = (e) => {
       const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
       const isCmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
-      
+
       if ((e.key === 'Backspace' || e.key === 'Delete') && selectedNoteIds.size > 0) {
         selectedNoteIds.forEach(id => deleteNote(id));
         setSelectedNoteIds(new Set());
       } else if (isCmdOrCtrl && e.key.toLowerCase() === 'a') {
-        // Cmd+A to select all notes
+
         e.preventDefault();
         setSelectedNoteIds(new Set(rawNotes.map(n => n.id)));
       }
@@ -69,7 +69,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     if (e.target === e.currentTarget || e.target.classList.contains('bg-[#1a1a1a]') || e.target.classList.contains('bg-[#111111]')) {
       setSelectedNoteIds(new Set());
     }
-    
+
     if (!onSeek) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -114,10 +114,10 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
       const beatsPerMinute = tempo;
       const secondsPerBeat = 60 / beatsPerMinute;
       const secondsPerDivision = secondsPerBeat * (4 / snapDivision); 
-      
+
       if (updates.time !== undefined) {
         updates.time = Math.round(updates.time / secondsPerDivision) * secondsPerDivision;
-        setGhostTime(updates.time); // Show ghost line at snap target
+        setGhostTime(updates.time); 
       }
       if (updates.duration !== undefined) {
         updates.duration = Math.round(updates.duration / secondsPerDivision) * secondsPerDivision;
@@ -127,9 +127,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     } else {
       if (updates.time !== undefined) setGhostTime(updates.time);
     }
-    
-    // Clear ghost line if drag is finished (we assume if it's a final update it has an id)
-    // Actually DraggableNote might need an onDragEnd to clear ghost line, but let's clear it on a timeout
+
     clearTimeout(window.ghostTimeout);
     window.ghostTimeout = setTimeout(() => setGhostTime(null), 100);
 
@@ -151,10 +149,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     const x = e.clientX - rect.left + containerRef.current.scrollLeft;
     const time = x / pixelsPerSecond;
     setPointerTime(time);
-    
-    // Publish to a global or just keep in state? 
-    // The spec asks for exact horizontal pointer time coordinates.
-    // We can dispatch a custom event to avoid re-rendering the whole editor on every move.
+
     window.dispatchEvent(new CustomEvent('piano-pointer-move', { detail: { time } }));
   };
 
@@ -162,7 +157,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     setActiveKeys(prev => new Set(prev).add(midiNote));
     triggerCustomAttackRelease(midiNote, 0.5, getAudioContextTime(), 0.8);
   };
-  
+
   const stopVirtualKey = (midiNote) => {
     setActiveKeys(prev => {
       const next = new Set(prev);
@@ -171,7 +166,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     });
   };
 
-  // Grid math
   const beatsPerMinute = tempo || 120;
   const beatsPerSecond = beatsPerMinute / 60;
   const secondsPerBeat = 1 / beatsPerSecond;
@@ -198,8 +192,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
 
   return (
     <div className="flex flex-col w-full h-full relative group bg-[#161616]">
-      
-      {/* Toolbar */}
+
       <div className="absolute top-4 right-6 z-20 flex items-center gap-2 bg-[#252526] shadow-lg p-1.5 rounded-lg border border-[#333] opacity-0 group-hover:opacity-100 transition-opacity">
         <div className="flex items-center gap-2 mr-4 px-2">
           <Grid3X3 size={14} className="text-zinc-500" />
@@ -237,7 +230,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Fixed Left Vertical Piano Keyboard */}
+
         <div 
           ref={keyboardRef}
           className="w-16 shrink-0 bg-[#1e1e1e] border-r border-[#333] z-10 overflow-hidden select-none"
@@ -269,7 +262,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
           </div>
         </div>
 
-        {/* Scrollable Canvas Grid */}
         <div 
           ref={containerRef}
           onScroll={handleScroll}
@@ -283,7 +275,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
             onPointerEnter={() => setIsHovering(true)}
             onPointerLeave={() => setIsHovering(false)}
           >
-            {/* Pitch Rows */}
+
             {rows.map(row => (
               <div 
                 key={`row-${row.midi}`}
@@ -292,8 +284,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               />
             ))}
 
-            
-            {/* Telemetry Overlay */}
             {isHovering && pointerTime > 0 && (
               <div 
                 className="absolute top-0 bottom-0 pointer-events-none z-40 border-l border-dashed border-[#D4C5A9]/50"
@@ -305,7 +295,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               </div>
             )}
 
-            {/* Time Grid (Beats & Measures) */}
             {gridLines.map((line, i) => (
               <div 
                 key={`grid-${i}`}
@@ -319,7 +308,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               </div>
             ))}
 
-            {/* Loop Region Overlay */}
             {isLooping && loopEnd > 0 && (
               <div 
                 className="absolute top-0 h-full bg-white/5 border-x border-white/30 z-20 pointer-events-none"
@@ -336,7 +324,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               </div>
             )}
 
-            {/* Notes */}
             <div className="absolute inset-0 z-10 pointer-events-none">
               {rawNotes.map((note) => {
                 if (note.midi < START_MIDI || note.midi > END_MIDI) return null;
@@ -370,7 +357,6 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               })}
             </div>
 
-            {/* Ghost Snap Line */}
             {ghostTime !== null && (
               <div 
                 className="absolute top-0 h-full w-[2px] bg-white shadow-[0_0_10px_#ffffff] z-30 pointer-events-none"
@@ -378,13 +364,11 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
               />
             )}
 
-            {/* Playhead */}
             <Playhead pixelsPerSecond={pixelsPerSecond} containerRef={containerRef} />
           </div>
         </div>
       </div>
 
-      {/* Velocity Lane */}
       {showVelocity && (
         <div className="flex w-full border-t border-[#333]">
           <div className="w-16 shrink-0 bg-[#1e1e1e] border-r border-[#333]" />

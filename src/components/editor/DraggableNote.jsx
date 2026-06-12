@@ -6,7 +6,7 @@ const DraggableNote = memo(function DraggableNote({
   const left = note.time * pixelsPerSecond;
   const width = note.duration * pixelsPerSecond;
   const top = (END_MIDI - note.midi) * ROW_HEIGHT;
-  
+
   return (
     <div
       onPointerDown={(e) => { e.stopPropagation(); onSelect(note.id, e.shiftKey || e.metaKey); }}

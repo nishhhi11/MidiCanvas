@@ -9,15 +9,13 @@ function midiToNote(midi) {
 }
 
 export default function PianoKeyboard({ activeNotes = [] }) {
-  const START_MIDI = 21; // A0
+  const START_MIDI = 21; 
   const TOTAL_KEYS = 88;
 
-  // Convert activeNotes array to a Set of active MIDI numbers for O(1) lookup
   const activeMidiSet = useMemo(() => {
     return new Set(activeNotes.map((note) => note.midi || note));
   }, [activeNotes]);
 
-  // Pre-calculate the entire 88-key standard layout
   const keys = useMemo(() => {
     const layout = [];
     for (let i = 0; i < TOTAL_KEYS; i++) {
@@ -46,11 +44,10 @@ export default function PianoKeyboard({ activeNotes = [] }) {
   return (
     <div className="absolute inset-0 w-full h-full overflow-x-auto hide-scrollbar custom-scrollbar bg-black border border-white/10 rounded-b-2xl shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
       <div className="relative flex h-full" style={{ minWidth: '800px' }}>
-        
-        {/* Render White Keys */}
+
         {whiteKeys.map((key) => {
           const isActive = activeMidiSet.has(key.midi);
-          
+
           return (
             <div
               key={key.midi}
@@ -63,7 +60,7 @@ export default function PianoKeyboard({ activeNotes = [] }) {
                   : 'bg-gradient-to-b from-white to-gray-200 hover:from-gray-100 hover:to-gray-300'
               }`}
             >
-              {/* Optional Octave Marker (e.g. C4, C5) */}
+
               {key.midi % 12 === 0 && (
                 <span className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[10px] font-bold text-zinc-400 pointer-events-none select-none">
                   C{Math.floor(key.midi / 12) - 1}
@@ -73,16 +70,13 @@ export default function PianoKeyboard({ activeNotes = [] }) {
           );
         })}
 
-        {/* Render Black Keys */}
         {blackKeys.map((key) => {
           const isActive = activeMidiSet.has(key.midi);
-          
-          // Calculate precise horizontal position overlaying white key borders
+
           const whiteKeyWidth = 100 / whiteKeys.length;
           const whiteKeysBefore = whiteKeys.filter((wk) => wk.midi < key.midi).length;
           const leftPercent = whiteKeysBefore * whiteKeyWidth;
-          
-          // Black key is roughly 60% the width of a white key
+
           const blackKeyWidth = whiteKeyWidth * 0.6;
 
           return (

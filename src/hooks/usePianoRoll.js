@@ -1,7 +1,4 @@
-/**
- * usePianoRoll.js
- * Custom hook for piano roll canvas drawing and note interactions.
- */
+
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useMidiStore } from '../stores/midiStore';
 import { usePlaybackStore } from '../stores/playbackStore';
@@ -12,10 +9,6 @@ const END_MIDI = 108;
 const TOTAL_KEYS = END_MIDI - START_MIDI + 1;
 const ROW_HEIGHT = 16;
 
-/**
- * Manages zoom, snap, note selection, and grid calculations
- * for the piano roll canvas.
- */
 export function usePianoRoll({ tempo = 120, timeSignature = '4/4', duration = 0 }) {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
@@ -28,7 +21,6 @@ export function usePianoRoll({ tempo = 120, timeSignature = '4/4', duration = 0 
   const totalWidth = Math.max(duration * pixelsPerSecond, 1000);
   const totalHeight = TOTAL_KEYS * ROW_HEIGHT;
 
-  // Delete selected note on Backspace/Delete
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.key === 'Backspace' || e.key === 'Delete') && selectedNoteId) {
@@ -55,7 +47,6 @@ export function usePianoRoll({ tempo = 120, timeSignature = '4/4', duration = 0 
     updateNote(id, updates);
   }, [snapDivision, tempo, updateNote]);
 
-  // Build pitch rows
   const rows = [];
   for (let i = 0; i < TOTAL_KEYS; i++) {
     const midi = START_MIDI + i;

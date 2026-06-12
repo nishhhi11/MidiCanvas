@@ -16,7 +16,7 @@ export const KEY_MAP = [
   { note: "A4", type: "white", octave: 4, pcKey: "H" },
   { note: "A#4", type: "black", octave: 4, pcKey: "U" },
   { note: "B4", type: "white", octave: 4, pcKey: "J" },
-  
+
   { note: "C5", type: "white", octave: 5, pcKey: "K" },
   { note: "C#5", type: "black", octave: 5, pcKey: "O" },
   { note: "D5", type: "white", octave: 5, pcKey: "L" },
@@ -45,13 +45,12 @@ export function getNotePosition(noteName) {
       type: "white"
     };
   } else {
-    // Black key logic
-    // The note name (e.g. C#4) corresponds to the left white key (C4)
+
     const leftWhiteKey = noteName.replace("#", "");
     const leftIndex = whiteKeyNotes.indexOf(leftWhiteKey);
     const leftWhiteRightEdge = (leftIndex + 1) * whiteKeyWidth;
-    
-    const blackKeyWidth = whiteKeyWidth * 0.6; // Black keys are 60% the width of white keys
+
+    const blackKeyWidth = whiteKeyWidth * 0.6; 
     const blackKeyLeft = leftWhiteRightEdge - (blackKeyWidth / 2);
 
     return {

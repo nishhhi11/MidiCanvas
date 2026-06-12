@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-// QWERTY -> MIDI note mapping (white keys only for Learn Mode)
 const KEY_NOTE_MAP = {
   'a': { name: 'C4',  midi: 60 },
   's': { name: 'D4',  midi: 62 },
@@ -13,13 +12,13 @@ const KEY_NOTE_MAP = {
 };
 
 export function useKeyboardPiano() {
-  // Set of active MIDI numbers for O(1) lookup in keyboard component
+
   const [activeKeys, setActiveKeys] = useState(new Set());
-  // The most recently pressed note object, or null
+
   const [pressedNote, setPressedNote] = useState(null);
 
   const handleKeyDown = useCallback((e) => {
-    // Ignore: OS key repeat, modifier keys, or keys captured in input fields
+
     if (e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     const key = e.key.toLowerCase();
@@ -41,7 +40,7 @@ export function useKeyboardPiano() {
         next.delete(note.midi);
         return next;
       });
-      // Clear pressedNote only if it was this specific note
+
       setPressedNote(prev => (prev?.midi === note.midi ? null : prev));
     }
   }, []);
@@ -56,8 +55,6 @@ export function useKeyboardPiano() {
     };
   }, [handleKeyDown, handleKeyUp]);
 
-  // Convert the Set of active MIDI numbers to the { midi } array format
-  // that PianoKeyboard expects
   const activeNotes = Array.from(activeKeys).map(midi => ({ midi }));
 
   return { pressedNote, activeNotes, activeKeys };

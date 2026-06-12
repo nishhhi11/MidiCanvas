@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
     const location = useLocation();
-    
+
     return (
         <nav
             className="fixed top-0 left-0 w-full z-50 px-6 py-4 flex items-center justify-between glass-panel border-b-0"
@@ -34,7 +34,7 @@ export default function Navbar() {
                     { label: "📁 MIDI Library", path: "/library" }
                 ].map(({label, path}) => {
                     const isActive = location.pathname === path;
-                    
+
                     return (
                         <Link
                             key={label}
@@ -52,7 +52,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex-1 flex justify-end">
-                 {/* Optional actions here */}
+
             </div>
         </nav>
     );

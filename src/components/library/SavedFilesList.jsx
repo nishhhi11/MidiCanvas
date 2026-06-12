@@ -35,7 +35,7 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
   }
 
   if (files.length === 0) {
-      // Has files but none match the search/filter
+
       return (
         <div className="text-center py-20 border border-white/5 bg-[#111] rounded-3xl mt-8">
           <h2 className="text-xl font-bold text-zinc-400">No results found</h2>
@@ -46,19 +46,14 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
       );
   }
 
-  // Determine recent projects (up to 3) if we are sorting by date.
-  // Actually, let's just always show recent projects as the first 3 if there's no search query.
-  // If there's a search, we just show the results grid.
-  const isDefaultView = files.length > 3; // or could pass `searchQuery` down. We'll just show them always.
+  const isDefaultView = files.length > 3; 
   const recordings = files.filter(f => f.name.startsWith("Recording "));
   const otherFiles = files.filter(f => !f.name.startsWith("Recording "));
   const recentFiles = [...otherFiles].sort((a, b) => b.uploadedAt - a.uploadedAt).slice(0, 3);
-  // For simplicity, we just render the grid. Wait, the user specifically asked for "Recent Projects" at the very top.
-  // Let's implement it cleanly:
 
   return (
     <div className="mt-8 flex flex-col gap-12">
-      {/* Recent Projects Section */}
+
       {recentFiles.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-6">
@@ -97,7 +92,6 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
         </div>
       </section>
 
-      {/* Recordings Section */}
       {recordings.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-6 mt-8">

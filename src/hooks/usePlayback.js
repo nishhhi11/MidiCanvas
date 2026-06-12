@@ -24,21 +24,18 @@ export function usePlaybackController() {
     isLooping, playbackRate,
     loopStart, loopEnd, isMetronomeOn
   } = usePlaybackStore();
-  
+
   const notes = midiData?.notes || [];
   const requestRef = useRef();
 
-  // Sync mute/solo/volume state instantly to the playback engine
   useEffect(() => {
     setTrackStates(mutedTracks, soloedTracks, trackVolumes);
   }, [mutedTracks, soloedTracks, trackVolumes]);
 
-  // Sync master volume
   useEffect(() => {
     setMasterVolume(masterVolume);
   }, [masterVolume]);
 
-  // Sync playback rate
   useEffect(() => {
     setPlaybackSpeed(playbackRate);
   }, [playbackRate]);
@@ -54,8 +51,7 @@ export function usePlaybackController() {
     if (playbackState === 'playing') {
       const time = getCurrentTime();
       setCurrentTime(time);
-      
-      // Check if we've reached the end of the song or loop end
+
       const maxTime = notes.length > 0 ? Math.max(...notes.map(n => n.time + n.duration)) : 0;
       const effectiveLoopEnd = loopEnd > 0 ? loopEnd : maxTime;
 
@@ -67,8 +63,7 @@ export function usePlaybackController() {
           return;
         }
       }
-      
-      // Compute active notes efficiently (ignoring muted tracks)
+
       const active = notes.filter(n => {
         if (time < n.time || time >= n.time + n.duration) return false;
         if (soloedTracks.size > 0) return soloedTracks.has(n.track);
@@ -93,7 +88,7 @@ export function usePlaybackController() {
 
   const handlePlay = useCallback(async () => {
     if (!notes || notes.length === 0) return;
-    
+
     await initializeAudio();
 
     if (playbackState === 'paused') {
@@ -115,7 +110,7 @@ export function usePlaybackController() {
   const handleSeek = useCallback((time) => {
     seek(time);
     setCurrentTime(time);
-    // Let the RAF loop update the active notes instantly on next frame
+
   }, [setCurrentTime]);
 
   return { handlePlay, handlePause, handleStop, handleSeek };

@@ -13,8 +13,7 @@ export function setTrackStates(muted, soloed, volumes = {}) {
 
 export function setMasterVolume(val) {
   if (!Tone) return;
-  // Convert linear 0.0 - 1.0 to decibels (-60 to 0)
-  // When val is 0, we can just mute it entirely
+
   if (val <= 0) {
     Tone.Destination.mute = true;
   } else {
@@ -46,20 +45,17 @@ export function playMidi(notes, tempo = 120, timeSignature = "4/4", duration = 0
 
   if (!Tone) return;
 
-  // Clear any previously scheduled events from the Transport timeline
   Tone.Transport.cancel();
 
-  // Schedule metronome clicks
   if (isMetronomeOn && tempo > 0 && duration > 0) {
     const beatDuration = 60 / tempo;
     const beatsPerMeasure = parseInt(timeSignature.split('/')[0]) || 4;
-    
-    // Slight buffer past duration to ensure last measure rings
+
     for (let t = 0; t <= duration + beatDuration; t += beatDuration) {
-      // Determine if this is the downbeat (first beat of the measure)
+
       const beatIndex = Math.round(t / beatDuration);
       const isDownbeat = beatIndex % beatsPerMeasure === 0;
-      
+
       Tone.Transport.schedule((time) => {
         if (metronomeSynth) {
           metronomeSynth.triggerAttackRelease(isDownbeat ? "C3" : "G2", "32n", time, isDownbeat ? 0.8 : 0.4);
@@ -68,14 +64,13 @@ export function playMidi(notes, tempo = 120, timeSignature = "4/4", duration = 0
     }
   }
 
-  // Schedule every note onto the Transport timeline
   notes.forEach((note) => {
     Tone.Transport.schedule((time) => {
-      // Dynamic track check at exact playback moment
+
       const isActive = soloedTracksSet.size > 0 
         ? soloedTracksSet.has(note.track) 
         : !mutedTracksSet.has(note.track);
-      
+
       if (!isActive) return;
 
       const trackVol = trackVolumesData[note.track] !== undefined ? trackVolumesData[note.track] : 1.0;
@@ -87,7 +82,6 @@ export function playMidi(notes, tempo = 120, timeSignature = "4/4", duration = 0
     }, note.time);
   });
 
-  // Begin playback
   Tone.Transport.start();
 }
 

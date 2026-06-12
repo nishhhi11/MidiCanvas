@@ -1,15 +1,8 @@
-/**
- * useMidiParser.js
- * Custom hook for parsing .mid / .midi files into structured MidiData.
- */
+
 import { useCallback } from 'react';
 import { parseMidi } from '../utils/midiParser';
 import { useMidiStore } from '../stores/midiStore';
 
-/**
- * Provides a `parse` function that reads a File/Blob, decodes MIDI,
- * and pushes the result into the midiStore.
- */
 export function useMidiParser() {
   const { setMidiData, setUploadedFile } = useMidiStore();
 

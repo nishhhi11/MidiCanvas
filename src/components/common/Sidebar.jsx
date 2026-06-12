@@ -21,11 +21,10 @@ export default function Sidebar() {
     try {
       const rawData = await getFileRawData(file.id);
       if (!rawData) return;
-      
-      // Convert Uint8Array back to ArrayBuffer/Blob format for parser
+
       const blob = new Blob([rawData], { type: 'audio/midi' });
       const parsed = await parseMidi(blob);
-      
+
       setUploadedFile(file.name);
       setMidiData(parsed);
       navigate("/studio");
@@ -50,25 +49,23 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 min-h-screen border-r border-white/5 bg-[#050505] p-6 flex flex-col">
-      {/* Top Branding */}
+
       <Link to="/" className="flex items-center gap-3 mb-12 px-4 hover:opacity-80 transition-opacity">
         <span className="text-2xl">🎹</span>
         <h1 className="font-bold text-xl text-white">PianoFlow</h1>
       </Link>
 
-      {/* Middle Navigation */}
       <div className="space-y-2 flex-1">
         <NavItem icon={Mic2} label="MIDI Studio" path="/studio" />
         <NavItem icon={LibraryIcon} label="Library" path="/library" />
       </div>
 
-      {/* Saved Library Files */}
       <div className="mt-8 border-t border-white/10 pt-6">
         <div className="flex items-center justify-between mb-4 px-2">
           <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">My Library</h2>
           {isLoading && <Loader2 size={12} className="text-zinc-500 animate-spin" />}
         </div>
-        
+
         <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-2">
           {savedFiles.length === 0 && !isLoading && (
             <p className="text-xs text-zinc-600 px-2">No files saved yet.</p>

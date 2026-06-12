@@ -4,7 +4,7 @@ export function parseMidi(file) {
   return new Promise(async (resolve, reject) => {
     const buffer = await file.arrayBuffer();
     const worker = new MidiWorker();
-    
+
     worker.onmessage = (e) => {
       const { success, parsed, error } = e.data;
       if (success) {
