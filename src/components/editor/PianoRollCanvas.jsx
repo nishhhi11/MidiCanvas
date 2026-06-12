@@ -29,6 +29,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
   const activeNoteMidis = new Set([...activePlaybackNotes.map(n => n.midi), ...activeKeys]);
 
   const [pointerTime, setPointerTime] = useState(0); // Telemetry overlay support
+  const [isHovering, setIsHovering] = useState(false);
   const containerRef = useRef(null);
   const keyboardRef = useRef(null);
   const velocityRef = useRef(null);
@@ -279,15 +280,30 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
             style={{ width: `${totalWidth}px`, height: `${totalHeight}px` }}
             onPointerDown={handleCanvasClick}
             onPointerMove={handlePointerMoveCanvas}
+            onPointerEnter={() => setIsHovering(true)}
+            onPointerLeave={() => setIsHovering(false)}
           >
             {/* Pitch Rows */}
             {rows.map(row => (
               <div 
                 key={`row-${row.midi}`}
-                className={`absolute w-full border-b pointer-events-none ${row.isBlack ? 'bg-[#111111] border-[#222]' : 'bg-[#1a1a1a] border-[#222]'}`}
+                className={`absolute w-full border-b pointer-events-none ${row.isBlack ? 'bg-[#0a0a0a] border-[#222]' : 'bg-[#161616] border-[#282828]'}`}
                 style={{ top: row.top, height: ROW_HEIGHT }}
               />
             ))}
+
+            
+            {/* Telemetry Overlay */}
+            {isHovering && pointerTime > 0 && (
+              <div 
+                className="absolute top-0 bottom-0 pointer-events-none z-40 border-l border-dashed border-[#D4C5A9]/50"
+                style={{ left: pointerTime * pixelsPerSecond }}
+              >
+                <div className="absolute top-2 left-1 bg-[#D4C5A9] text-black text-[10px] font-mono px-1.5 py-0.5 rounded-sm shadow-md whitespace-nowrap">
+                  {Math.floor(pointerTime / 60)}:{(pointerTime % 60).toFixed(2).padStart(5, '0')}
+                </div>
+              </div>
+            )}
 
             {/* Time Grid (Beats & Measures) */}
             {gridLines.map((line, i) => (
@@ -296,7 +312,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
                 className={`absolute top-0 h-full border-r pointer-events-none z-0`}
                 style={{ 
                   left: line.time * pixelsPerSecond,
-                  borderColor: line.isMeasure ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)'
+                  borderColor: line.isMeasure ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)'
                 }}
               >
                 {line.isMeasure && <span className="absolute bottom-1 left-2 text-[10px] text-[#666] font-mono select-none z-10 bg-[#1a1a1a]/80 px-1 rounded">M{Math.round(line.time / secondsPerMeasure) + 1}</span>}

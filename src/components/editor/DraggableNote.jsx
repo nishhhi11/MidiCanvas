@@ -10,7 +10,7 @@ const DraggableNote = memo(function DraggableNote({
   return (
     <div
       onPointerDown={(e) => { e.stopPropagation(); onSelect(note.id, e.shiftKey || e.metaKey); }}
-      className={`absolute rounded-sm border ${isSelected ? 'border-white z-10' : 'border-black/50 z-0'} ${colorClass}`}
+      className={`absolute rounded-sm border transition-all duration-150 ease-out cursor-pointer ${isSelected ? 'border-white z-10 scale-[1.03] shadow-lg shadow-white/20' : 'border-black/50 z-0 hover:scale-[1.01] hover:shadow-md'} ${colorClass}`}
       style={{
         left, width, top, height: ROW_HEIGHT, backgroundColor: colorHex,
         filter: isPlaying ? 'brightness(1.4) saturate(1.2)' : isSelected ? 'brightness(1.2)' : 'none',

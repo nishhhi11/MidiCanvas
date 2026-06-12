@@ -622,7 +622,16 @@ export default function EditorPage() {
                    return (
                     <div key={track.id || idx} className="flex items-center justify-between text-base">
                       <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                        
+                        <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
+                          <input 
+                            type="color" 
+                            value={color} 
+                            onChange={(e) => setTrackColor(track.id, e.target.value)}
+                            className="absolute -inset-2 w-8 h-8 cursor-pointer"
+                          />
+                        </div>
+
                         <span className="text-[#FFFFF0] truncate max-w-[60px]">{track.name || `Track ${track.id + 1}`}</span>
                       </div>
                       <div className="flex gap-1">
@@ -720,12 +729,12 @@ export default function EditorPage() {
             </div>
             <div className="grid grid-cols-2 gap-1 text-center">
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-2xl font-bold text-[#D4C5A9]">{totalNotesCount}</div>
-                <div className="text-[11px] text-[#888888]">NOTES</div>
+                <div className="text-xl lg:text-2xl font-bold text-[#D4C5A9]">{totalNotesCount}</div>
+                <div className="text-[9px] lg:text-[11px] text-[#888888]">NOTES</div>
               </div>
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-2xl font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
-                <div className="text-[11px] text-[#888888]">VOICES</div>
+                <div className="text-xl lg:text-2xl font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
+                <div className="text-[9px] lg:text-[11px] text-[#888888]">VOICES</div>
               </div>
             </div>
             {isLooping && (
@@ -740,7 +749,7 @@ export default function EditorPage() {
             <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               ⌨️ Shortcuts
             </div>
-            <div className="space-y-0.5 text-base">
+            <div className="space-y-0.5 text-xs lg:text-sm">
               <div className="flex justify-between">
                 <span className="text-[#FFFFF0]">Play/Pause</span>
                 <span className="text-[#D4C5A9]">Space</span>
