@@ -3,65 +3,100 @@
 @import "@fontsource-variable/geist";
 
 @theme {
-  --color-bg-primary: #050505;
-  --color-bg-secondary: #0D0D0D;
-  --color-bg-tertiary: #141414;
-  --color-border: #222222;
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-border: var(--border);
 
-  --color-primary: #FFFFF0;
-  --color-secondary: #EBEBE0;
-  --color-success: #FFFFF0;
-  --color-text-main: #FFFFF0;
-  --color-text-muted: #999999;
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-success: var(--success);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
 }
 
 :root {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #e9ecef;
+  --bg-tertiary: #dee2e6;
+  --border: #ced4da;
+  
+  --primary: #212529;
+  --secondary: #343a40;
+  --success: #212529;
+  --text-main: #212529;
+  --text-muted: #6c757d;
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5), 0 8px 40px 0 rgba(0, 0, 0, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.8);
+  --glass-border-hover: rgba(0, 0, 0, 0.1);
+  --glass-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.6), 0 8px 40px 0 rgba(0, 0, 0, 0.1);
+
+  --ivory-glow: 0 0 20px rgba(0, 0, 0, 0.05);
+  --ivory-glow-hover: 0 0 35px rgba(0, 0, 0, 0.1);
+  
+  --particle: black;
+}
+
+.dark {
   --bg-primary: #050505;
   --bg-secondary: #0D0D0D;
   --bg-tertiary: #141414;
-
   --border: #222222;
 
+  --primary: #FFFFF0;
+  --secondary: #EBEBE0;
+  --success: #FFFFF0;
   --text-main: #FFFFF0;
   --text-muted: #999999;
+  
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 8px 40px 0 rgba(0, 0, 0, 0.6);
+  --glass-bg-hover: rgba(255, 255, 255, 0.04);
+  --glass-border-hover: rgba(255, 255, 255, 0.1);
+  --glass-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 8px 40px 0 rgba(0, 0, 0, 0.8);
 
-  --accent: #FFFFF0;
+  --ivory-glow: 0 0 20px rgba(255, 255, 240, 0.1);
+  --ivory-glow-hover: 0 0 35px rgba(255, 255, 240, 0.2);
+
+  --particle: white;
 }
 
 body {
   margin: 0;
-  background: #050505;
-  color: #FFFFF0;
+  background: var(--bg-primary);
+  color: var(--text-main);
   font-family: "Geist Variable", sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ─── Utilities ────────────────────────────────────────────────────────────── */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--glass-bg);
   backdrop-filter: blur(24px) saturate(150%);
   -webkit-backdrop-filter: blur(24px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-              0 8px 40px 0 rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
 }
 
 .glass-panel:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-              0 8px 40px 0 rgba(0, 0, 0, 0.8);
+  background: var(--glass-bg-hover);
+  border: 1px solid var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
 }
 
 .ivory-glow {
-  box-shadow: 0 0 20px rgba(255, 255, 240, 0.1);
+  box-shadow: var(--ivory-glow);
 }
 
 .ivory-glow:hover {
-  box-shadow: 0 0 35px rgba(255, 255, 240, 0.2);
+  box-shadow: var(--ivory-glow-hover);
 }
-
-
 
 /* ─── Animations ────────────────────────────────────────────────────────────── */
 
@@ -72,12 +107,10 @@ body {
 
 @keyframes music-drift {
   0% { transform: translate(0, 10vh) rotate(-15deg); opacity: 0; }
-  20% { opacity: 0.15; }
-  80% { opacity: 0.15; }
+  20% { opacity: 0.4; }
+  80% { opacity: 0.4; }
   100% { transform: translate(var(--drift-x, 100px), -100vh) rotate(15deg); opacity: 0; }
 }
-
-
 
 @keyframes particle-drift {
   0% {
@@ -100,10 +133,11 @@ body {
 .particle {
   width: 2px;
   height: 2px;
-  background: white;
+  background: var(--particle);
   opacity: 0.2;
   position: absolute;
   border-radius: 50%;
+  animation: particle-drift 15s infinite linear;
 }
 
 .animate-float-bg {
