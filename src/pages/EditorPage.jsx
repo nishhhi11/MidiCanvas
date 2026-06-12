@@ -305,7 +305,7 @@ export default function EditorPage() {
 
       <div className="flex-1 flex min-h-0 p-1 gap-1">
 
-        <div className="w-36 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-1 flex flex-col">
+        <div className="w-48 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
           <div className="text-xs font-bold text-[#888888] mb-1 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-1">
@@ -480,7 +480,7 @@ export default function EditorPage() {
       </div>
 
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
-        <div className="w-full max-w-6xl relative h-24 select-none">
+        <div className="w-full max-w-6xl relative h-32 select-none">
 
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
