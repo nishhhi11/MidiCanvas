@@ -269,7 +269,7 @@ export default function EditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
+            <span className="text-xs text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
               📁 {uploadedFile || 'No file loaded'}
             </span>
             <button 
@@ -306,7 +306,7 @@ export default function EditorPage() {
       <div className="flex-1 flex min-h-0 p-1 gap-1">
 
         <div className="w-36 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-1 flex flex-col">
-          <div className="text-[10px] font-bold text-[#888888] mb-1 uppercase tracking-wide">Transport</div>
+          <div className="text-xs font-bold text-[#888888] mb-1 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-1">
             <button 
@@ -322,7 +322,7 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleSeek(0)}
-              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Rewind to Start"
             >
               ⏪
@@ -335,13 +335,13 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleStop()}
-              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
             >
               ⏹️
             </button>
             <button 
               onClick={() => handleSeek(Math.min(totalTime, currentTime + 5))}
-              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Fast Forward"
             >
               ⏩
@@ -365,7 +365,7 @@ export default function EditorPage() {
 
           <div className="space-y-2">
             <div>
-              <div className="text-[10px] text-[#888888] mb-1 flex justify-between">
+              <div className="text-xs text-[#888888] mb-1 flex justify-between">
                 <span>🎯 TEMPO</span>
                 <span className="text-[#D4C5A9]">{tempo} BPM</span>
               </div>
@@ -394,7 +394,7 @@ export default function EditorPage() {
             </div>
 
             <div>
-              <div className="text-[10px] text-[#888888] mb-1 flex justify-between">
+              <div className="text-xs text-[#888888] mb-1 flex justify-between">
                 <span>🔊 VOLUME</span>
                 <span className="text-[#D4C5A9]">{Math.round(masterVolume * 100)}%</span>
               </div>
@@ -413,7 +413,7 @@ export default function EditorPage() {
 
         <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-1 flex flex-col min-w-0 relative">
           <div className="flex justify-between items-center mb-1 flex-shrink-0">
-            <div className="text-[10px] font-bold text-[#888888] uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#888888] uppercase tracking-wide">
               🎼 Piano Roll Editor
             </div>
             <div className="flex gap-2">
@@ -447,7 +447,7 @@ export default function EditorPage() {
               <div className="absolute inset-0 flex items-center justify-center bg-black/90 rounded-xl z-10">
                 <div className="text-center">
                   <div className="text-3xl mb-1">🎹</div>
-                  <div className="text-[10px] text-[#888888] mb-1">Ready to create?</div>
+                  <div className="text-xs text-[#888888] mb-1">Ready to create?</div>
                   <div className="text-sm text-[#555555] mb-3">Drag and drop a .mid file anywhere</div>
                   <label className="cursor-pointer">
                     <input type="file" accept=".mid,.midi" onChange={handleFileUpload} className="hidden" />
@@ -480,7 +480,7 @@ export default function EditorPage() {
       </div>
 
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
-        <div className="w-full max-w-6xl relative h-10 select-none">
+        <div className="w-full max-w-6xl relative h-24 select-none">
 
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
@@ -601,7 +601,7 @@ export default function EditorPage() {
         <div className="grid grid-cols-4 gap-3">
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               🎚️ Mixer
             </div>
             <div className="space-y-1 max-h-24 overflow-y-auto custom-scrollbar">
@@ -669,12 +669,12 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               🎯 Learning Mode
             </div>
             <div className="space-y-1.5">
               <div>
-                <div className="text-[10px] text-[#888888] mb-0.5">Speed</div>
+                <div className="text-xs text-[#888888] mb-0.5">Speed</div>
                 <div className="flex gap-1">
                   {[0.5, 0.75, 1.0, 1.25].map(speed => (
                     <button 
@@ -729,7 +729,7 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               📊 Status
             </div>
             <div className="grid grid-cols-2 gap-1 text-center">
@@ -750,7 +750,7 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
+            <div className="text-xs font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               ⌨️ Shortcuts
             </div>
             <div className="space-y-0.5 text-[10px] lg:text-xs">
