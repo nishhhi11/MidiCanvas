@@ -244,7 +244,7 @@ export default function EditorPage() {
       onDrop={handleDrop}
     >
 
-      <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-6 py-3">
+      <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-bold text-[#FFFFF0]">
@@ -303,9 +303,9 @@ export default function EditorPage() {
         </div>
       </header>
 
-      <div className="flex-1 flex min-h-0 p-4 gap-4">
+      <div className="flex-1 flex min-h-0 p-2 gap-2">
 
-        <div className="w-72 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
+        <div className="w-56 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
           <div className="text-sm font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-2">
@@ -480,7 +480,7 @@ export default function EditorPage() {
       </div>
 
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
-        <div className="w-full max-w-6xl relative h-32 select-none">
+        <div className="w-full max-w-6xl relative h-24 select-none">
 
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
