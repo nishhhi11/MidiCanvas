@@ -110,7 +110,7 @@ export default function LibraryPage() {
                         </div>
                         <button 
                             onClick={triggerUpload}
-                            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#FFFFF0] text-[#050505] hover:scale-105 font-bold uppercase tracking-wider ivory-glow transition-all"
+                            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#FFFFF0] text-[#050505] text-sm hover:scale-105 font-bold uppercase tracking-wider ivory-glow transition-all"
                         >
                             <Upload size={18} />
                             Upload New
