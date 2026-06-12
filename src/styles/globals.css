@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist";
+
+@theme {
+  --color-bg-primary: #050505;
+  --color-bg-secondary: #0D0D0D;
+  --color-bg-tertiary: #141414;
+  --color-border: #222222;
+
+  --color-primary: #FFFFF0;
+  --color-secondary: #EBEBE0;
+  --color-success: #FFFFF0;
+  --color-text-main: #FFFFF0;
+  --color-text-muted: #999999;
+}
+
+:root {
+  --bg-primary: #050505;
+  --bg-secondary: #0D0D0D;
+  --bg-tertiary: #141414;
+
+  --border: #222222;
+
+  --text-main: #FFFFF0;
+  --text-muted: #999999;
+
+  --accent: #FFFFF0;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: #FFFFF0;
+  font-family: "Geist Variable", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── Utilities ────────────────────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+              0 8px 40px 0 rgba(0, 0, 0, 0.6);
+}
+
+.glass-panel:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+              0 8px 40px 0 rgba(0, 0, 0, 0.8);
+}
+
+.ivory-glow {
+  box-shadow: 0 0 20px rgba(255, 255, 240, 0.1);
+}
+
+.ivory-glow:hover {
+  box-shadow: 0 0 35px rgba(255, 255, 240, 0.2);
+}
+
+
+
+/* ─── Animations ────────────────────────────────────────────────────────────── */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes music-drift {
+  0% { transform: translate(0, 10vh) rotate(-15deg); opacity: 0; }
+  20% { opacity: 0.15; }
+  80% { opacity: 0.15; }
+  100% { transform: translate(var(--drift-x, 100px), -100vh) rotate(15deg); opacity: 0; }
+}
+
+
+
+@keyframes particle-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% {
+    transform: translate(var(--drift-x, 100px), var(--drift-y, -200px)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes float-bg {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-40px) scale(1.02); }
+}
+
+.particle {
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.2;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.animate-float-bg {
+  animation: float-bg 20s ease-in-out infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(500px); opacity: 0; }
+}
+
+.animate-fall {
+  animation-name: fall;
+}

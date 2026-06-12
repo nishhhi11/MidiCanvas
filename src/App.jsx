@@ -4,83 +4,18 @@ import {
   Route,
 } from "react-router-dom";
 
-import { AuthProvider } from "./context/AuthContext";
-
-import Navbar from "./components/layout/Navbar";
-import Footer from "./components/layout/Footer";
-
-import Hero from "./components/hero/Hero";
-import Features from "./components/sections/Features";
-import SongLibrary from "./components/sections/SongLibrary";
-import Pricing from "./components/sections/Pricing";
-import CTA from "./components/sections/CTA";
-
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import Upload from "./pages/Upload";
-import Library from "./pages/Library";
-import Learn from "./pages/Learn";
-import Practice from "./pages/Practice";
-import Profile from "./pages/Profile";
-
-import HowItWorks from "./components/sections/HowItWorks";
-import MouseGlow from "./components/effects/MouseGlow";
-import FloatingNotes from "./components/effects/FloatingNotes";
-import BackgroundEffects from "./components/effects/BackgroundEffects";
-
-function LandingPage() {
-  return (
-    <div className="bg-transparent min-h-screen text-white">
-      <BackgroundEffects />
-      <MouseGlow />
-      <FloatingNotes />
-      <Navbar />
-
-      <main>
-        <Hero />
-        <Features />
-        <HowItWorks />
-        <SongLibrary />
-        <Pricing />
-        <CTA />
-      </main>
-
-      <Footer />
-    </div>
-  );
-}
+import LandingPage from "./pages/LandingPage";
+import LibraryPage from "./pages/LibraryPage";
+import EditorPage from "./pages/EditorPage";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-
-          <Route
-            path="/"
-            element={<LandingPage />}
-          />
-
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/signup"
-            element={<Signup />}
-          />
-
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/learn" element={<Learn />} />
-          <Route path="/practice" element={<Practice />} />
-          <Route path="/profile" element={<Profile />} />
-
-        </Routes>
-      </AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/library" element={<LibraryPage />} />
+        <Route path="/studio" element={<EditorPage />} />
+      </Routes>
     </BrowserRouter>
   );
 }
