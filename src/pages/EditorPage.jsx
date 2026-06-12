@@ -256,7 +256,7 @@ export default function EditorPage() {
                 <Link 
                   key={tab} 
                   to={tab === 'EDITOR' ? '/studio' : tab === 'LIBRARY' ? '/library' : '/'}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`px-3 py-1 rounded-md text-[10px] text-sm font-medium transition-all ${
                     tab === 'EDITOR' 
                       ? 'bg-[#2a2a2a] text-[#FFFFF0]' 
                       : 'text-[#888888] hover:text-[#FFFFF0] hover:bg-[#1a1a1a]'
@@ -269,7 +269,7 @@ export default function EditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
+            <span className="text-[10px] text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
               📁 {uploadedFile || 'No file loaded'}
             </span>
             <button 
@@ -305,10 +305,10 @@ export default function EditorPage() {
 
       <div className="flex-1 flex min-h-0 p-1 gap-1">
 
-        <div className="w-48 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-1.5 flex flex-col">
-          <div className="text-sm font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
+        <div className="w-36 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-1 flex flex-col">
+          <div className="text-[10px] font-bold text-[#888888] mb-1 uppercase tracking-wide">Transport</div>
 
-          <div className="flex justify-center gap-2 mb-2">
+          <div className="flex justify-center gap-2 mb-1">
             <button 
               onClick={toggleRecord}
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
@@ -322,7 +322,7 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleSeek(0)}
-              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Rewind to Start"
             >
               ⏪
@@ -335,13 +335,13 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleStop()}
-              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
             >
               ⏹️
             </button>
             <button 
               onClick={() => handleSeek(Math.min(totalTime, currentTime + 5))}
-              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-6 h-6 rounded-full text-[10px] bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Fast Forward"
             >
               ⏩
@@ -350,7 +350,7 @@ export default function EditorPage() {
 
           <button 
             onClick={toggleLoop}
-            className={`text-sm py-2 rounded-md mb-2 transition-all ${
+            className={`text-sm py-1 rounded-md text-[10px] mb-1 transition-all ${
               isLooping 
                 ? 'bg-[#2a2a2a] text-[#D4C5A9] border border-[#D4C5A9]/30' 
                 : 'bg-[#1a1a1a] text-[#888888] hover:bg-[#2a2a2a]'
@@ -359,13 +359,13 @@ export default function EditorPage() {
             🔁 {isLooping ? 'LOOP ACTIVE' : 'LOOP'}
           </button>
 
-          <div className="text-center font-mono text-xl font-bold text-[#D4C5A9] mb-2">
+          <div className="text-center font-mono text-sm font-bold text-[#D4C5A9] mb-1">
             {formatTime(currentTime)} / {formatTime(totalTime)}
           </div>
 
           <div className="space-y-2">
             <div>
-              <div className="text-sm text-[#888888] mb-1 flex justify-between">
+              <div className="text-[10px] text-[#888888] mb-1 flex justify-between">
                 <span>🎯 TEMPO</span>
                 <span className="text-[#D4C5A9]">{tempo} BPM</span>
               </div>
@@ -394,7 +394,7 @@ export default function EditorPage() {
             </div>
 
             <div>
-              <div className="text-sm text-[#888888] mb-1 flex justify-between">
+              <div className="text-[10px] text-[#888888] mb-1 flex justify-between">
                 <span>🔊 VOLUME</span>
                 <span className="text-[#D4C5A9]">{Math.round(masterVolume * 100)}%</span>
               </div>
@@ -411,9 +411,9 @@ export default function EditorPage() {
           </div>
         </div>
 
-        <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-1.5 flex flex-col min-w-0 relative">
-          <div className="flex justify-between items-center mb-2 flex-shrink-0">
-            <div className="text-sm font-semibold text-[#888888] uppercase tracking-wide">
+        <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-1 flex flex-col min-w-0 relative">
+          <div className="flex justify-between items-center mb-1 flex-shrink-0">
+            <div className="text-[10px] font-bold text-[#888888] uppercase tracking-wide">
               🎼 Piano Roll Editor
             </div>
             <div className="flex gap-2">
@@ -446,8 +446,8 @@ export default function EditorPage() {
             {!hasMIDILoaded ? (
               <div className="absolute inset-0 flex items-center justify-center bg-black/90 rounded-xl z-10">
                 <div className="text-center">
-                  <div className="text-3xl mb-2">🎹</div>
-                  <div className="text-sm text-[#888888] mb-2">Ready to create?</div>
+                  <div className="text-3xl mb-1">🎹</div>
+                  <div className="text-[10px] text-[#888888] mb-1">Ready to create?</div>
                   <div className="text-sm text-[#555555] mb-3">Drag and drop a .mid file anywhere</div>
                   <label className="cursor-pointer">
                     <input type="file" accept=".mid,.midi" onChange={handleFileUpload} className="hidden" />
@@ -471,7 +471,7 @@ export default function EditorPage() {
             )}
             {isParsing && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20 rounded-xl">
-                 <div className="w-8 h-8 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin mb-2" />
+                 <div className="w-8 h-8 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin mb-1" />
                  <span className="text-[#888888] text-sm">Parsing MIDI...</span>
               </div>
             )}
@@ -480,7 +480,7 @@ export default function EditorPage() {
       </div>
 
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
-        <div className="w-full max-w-6xl relative h-16 select-none">
+        <div className="w-full max-w-6xl relative h-10 select-none">
 
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
@@ -601,7 +601,7 @@ export default function EditorPage() {
         <div className="grid grid-cols-4 gap-3">
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               🎚️ Mixer
             </div>
             <div className="space-y-1 max-h-24 overflow-y-auto custom-scrollbar">
@@ -613,7 +613,7 @@ export default function EditorPage() {
                    const isMuted = mutedTracks.has(track.id);
                    const isSoloed = soloedTracks.has(track.id);
                    return (
-                    <div key={track.id || idx} className="flex flex-col mb-2">
+                    <div key={track.id || idx} className="flex flex-col mb-1">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-1">
 
@@ -669,12 +669,12 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               🎯 Learning Mode
             </div>
             <div className="space-y-1.5">
               <div>
-                <div className="text-sm text-[#888888] mb-0.5">Speed</div>
+                <div className="text-[10px] text-[#888888] mb-0.5">Speed</div>
                 <div className="flex gap-1">
                   {[0.5, 0.75, 1.0, 1.25].map(speed => (
                     <button 
@@ -694,13 +694,13 @@ export default function EditorPage() {
               <div className="flex gap-1">
                 <button 
                   onClick={() => setLoopPoints(currentTime, loopEnd)} 
-                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
+                  className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟳ Set Start
                 </button>
                 <button 
                   onClick={() => setLoopPoints(loopStart, currentTime)} 
-                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
+                  className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟲ Set End
                 </button>
@@ -729,16 +729,16 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               📊 Status
             </div>
             <div className="grid grid-cols-2 gap-1 text-center">
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-lg lg:text-xl font-bold text-[#D4C5A9]">{totalNotesCount}</div>
+                <div className="text-lg lg:text-sm font-bold text-[#D4C5A9]">{totalNotesCount}</div>
                 <div className="text-[9px] lg:text-[11px] text-[#888888]">NOTES</div>
               </div>
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-lg lg:text-xl font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
+                <div className="text-lg lg:text-sm font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
                 <div className="text-[9px] lg:text-[11px] text-[#888888]">VOICES</div>
               </div>
             </div>
@@ -750,7 +750,7 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-[10px] font-bold text-[#888888] mb-0.5 uppercase tracking-wide">
               ⌨️ Shortcuts
             </div>
             <div className="space-y-0.5 text-[10px] lg:text-xs">
