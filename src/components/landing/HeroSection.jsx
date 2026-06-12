@@ -65,11 +65,11 @@ export default function HeroSection() {
             <div className="absolute top-40 right-20 text-[150px] opacity-[0.03] blur-[2px] rotate-[15deg] pointer-events-none z-0 select-none">🎹</div>
             <div className="absolute bottom-40 left-1/4 text-[100px] opacity-[0.03] blur-[2px] rotate-[-20deg] pointer-events-none z-0 select-none">🎹</div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight relative z-10 max-w-5xl">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight relative z-10 max-w-5xl">
                 MIDI Canvas — Parse, Edit, and Learn Piano from Any MIDI File
             </h1>
 
-            <p className="text-xl text-zinc-400 max-w-2xl mb-12 relative z-10 leading-relaxed">
+            <p className="text-lg text-zinc-400 max-w-2xl mb-12 relative z-10 leading-relaxed">
                 Turn any .mid file into an interactive piano lesson. Visualize notes, edit tracks, and practice at your own pace — entirely in your browser.
             </p>
 
@@ -94,7 +94,7 @@ export default function HeroSection() {
                     >
                         <Music size={32} className={`transition-all duration-300 ${isDragActive ? 'text-white scale-110' : 'text-[#FFFFF0]/70 group-hover:scale-110'}`} />
                     </div>
-                    <h3 className="text-2xl font-bold text-[#FFFFF0] transition-all uppercase tracking-wide text-center">
+                    <h3 className="text-xl font-bold text-[#FFFFF0] transition-all uppercase tracking-wide text-center">
                         {isDragActive ? "Release to Upload!" : (
                             <>
                                 <span className="hidden md:inline">Drop MIDI File Here</span>
@@ -102,12 +102,12 @@ export default function HeroSection() {
                             </>
                         )}
                     </h3>
-                    <p className="text-[#999999] text-lg hidden md:block">or click to browse your computer</p>
+                    <p className="text-[#999999] text-base hidden md:block">or click to browse your computer</p>
                     <div className="flex flex-col items-center gap-1 mt-2">
-                        <span className="text-xs font-mono text-[#FFFFF0]/50 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                        <span className="text-[10px] font-mono text-[#FFFFF0]/50 bg-white/5 px-3 py-1 rounded-full border border-white/5">
                             Supported format: .mid, .midi
                         </span>
-                        <span className="text-sm italic text-[#FFFFF0]/40 mt-1">
+                        <span className="text-xs italic text-[#FFFFF0]/40 mt-1">
                             Example: "Fur Elise.mid" or any song
                         </span>
                     </div>
@@ -167,7 +167,7 @@ export default function HeroSection() {
                 </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm font-medium relative z-10">
+            <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs font-medium relative z-10">
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-[#FFFFF0]/80 transition-colors hover:text-[#FFFFF0]">
                     <Layers size={14} className="text-[#FFFFF0]/60" />
                     <span>10,000+ MIDI Files</span>

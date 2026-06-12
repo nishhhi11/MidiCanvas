@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import Navbar from "../components/common/Navbar";
 import SavedFilesList from "../components/library/SavedFilesList";
 import { useLibraryStore } from "../stores/libraryStore";
@@ -89,18 +90,23 @@ export default function LibraryPage() {
             <BackgroundAnimations />
             <Navbar />
 
-            <main className="flex-1 overflow-y-auto pb-32 pt-28 px-6 relative z-10">
+            <motion.main 
+                className="flex-1 overflow-y-auto pb-32 pt-28 px-6 relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+            >
                 <div className="max-w-[1400px] mx-auto space-y-8">
 
                     <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-[#FFFFF0]/10 pb-8">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <span className="text-4xl">💾</span>
-                                <h1 className="text-4xl font-black tracking-tight text-[#FFFFF0]">
+                                <span className="text-3xl">💾</span>
+                                <h1 className="text-3xl font-black tracking-tight text-[#FFFFF0]">
                                     My MIDI Library
                                 </h1>
                             </div>
-                            <p className="text-[#999999] text-lg">Your saved projects live here — forever in your browser.</p>
+                            <p className="text-[#999999] text-base">Your saved projects live here — forever in your browser.</p>
                         </div>
                         <button 
                             onClick={triggerUpload}
@@ -149,7 +155,7 @@ export default function LibraryPage() {
                     />
 
                 </div>
-            </main>
+            </motion.main>
 
             <div className="fixed bottom-0 left-0 w-full glass-panel border-b-0 border-x-0 z-50">
                 <div className="max-w-[1400px] mx-auto px-6 h-8 flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-[#999999]">

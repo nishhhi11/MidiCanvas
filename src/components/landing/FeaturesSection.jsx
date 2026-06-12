@@ -14,7 +14,7 @@ export default function FeaturesSection() {
                     desc: (
                         <>
                             Web Audio oscillators with velocity-sensitive volume.
-                            <span className="font-mono mt-3 mb-1 block text-xs bg-[#111] border border-white/5 p-2 rounded text-zinc-300">
+                            <span className="font-mono mt-3 mb-1 block text-[10px] bg-[#111] border border-white/5 p-2 rounded text-zinc-300">
                                 f = 440 × 2^((note - 69) / 12) Hz
                             </span>
                             <span className="text-[10px] text-zinc-500 italic block">
@@ -74,21 +74,21 @@ export default function FeaturesSection() {
 
     return (
         <section className="py-24 px-6 max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-text-main text-center mb-20 tracking-tight">🎹 What Makes MIDI Canvas Powerful</h2>
+            <h2 className="text-3xl font-bold text-text-main text-center mb-20 tracking-tight">🎹 What Makes MIDI Canvas Powerful</h2>
 
             <div className="space-y-24">
                 {featureGroups.map((group, groupIndex) => (
                     <div key={groupIndex}>
-                        <h3 className="text-2xl font-semibold text-text-main mb-8 border-b border-white/10 pb-4 inline-block">{group.title}</h3>
+                        <h3 className="text-xl font-semibold text-text-main mb-8 border-b border-white/10 pb-4 inline-block">{group.title}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {group.features.map((f, i) => (
                                 <div key={i} className="glass-panel p-6 rounded-2xl group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 ivory-glow">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFFFF0]/5 rounded-full blur-[40px] -mr-10 -mt-10 pointer-events-none group-hover:bg-[#FFFFF0]/10 transition-colors duration-500" />
-                                    <div className="text-3xl mb-4 group-hover:scale-110 transition-transform origin-left relative z-10 w-12 h-12 flex items-center justify-center bg-[#050505] rounded-xl border border-[#FFFFF0]/10 shadow-[0_0_15px_rgba(255,255,240,0.05)]">
+                                    <div className="text-2xl mb-4 group-hover:scale-110 transition-transform origin-left relative z-10 w-12 h-12 flex items-center justify-center bg-[#050505] rounded-xl border border-[#FFFFF0]/10 shadow-[0_0_15px_rgba(255,255,240,0.05)]">
                                         {f.icon}
                                     </div>
-                                    <h4 className="text-lg font-semibold text-[#FFFFF0] mb-3 relative z-10">{f.title}</h4>
-                                    <p className="text-sm text-[#999999] leading-relaxed relative z-10">{f.desc}</p>
+                                    <h4 className="text-base font-semibold text-[#FFFFF0] mb-3 relative z-10">{f.title}</h4>
+                                    <p className="text-xs text-[#999999] leading-relaxed relative z-10">{f.desc}</p>
                                 </div>
                             ))}
                         </div>

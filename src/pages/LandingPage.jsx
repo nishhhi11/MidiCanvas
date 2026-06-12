@@ -1,5 +1,6 @@
 import { BackgroundAnimations } from '../components/common/BackgroundAnimations';
 import React from "react";
+import { motion } from "framer-motion";
 import Navbar from "../components/common/Navbar";
 import HeroSection from "../components/landing/HeroSection";
 import FeaturesSection from "../components/landing/FeaturesSection";
@@ -13,12 +14,17 @@ export default function LandingPage() {
             <BackgroundAnimations />
             <Navbar />
 
-            <main className="relative z-10">
+            <motion.main 
+                className="relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+            >
                 <HeroSection />
                 <FeaturesSection />
                 <HowItWorksSection />
                 <CTASection />
-            </main>
+            </motion.main>
 
             <Footer className="relative z-10" />
         </div>

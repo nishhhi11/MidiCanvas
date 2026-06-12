@@ -11,7 +11,7 @@ export default function WhiteKey({ note, left, width, isActive, onMouseDown, onM
       }`}
       style={{ left: `${left}%`, width: `${width}%` }}
     >
-      <span className="pointer-events-none text-xs">{note}</span>
+      <span className="pointer-events-none text-[10px]">{note}</span>
     </div>
   );
 }

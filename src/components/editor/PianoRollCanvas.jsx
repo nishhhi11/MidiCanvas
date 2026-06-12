@@ -199,7 +199,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
           <select 
             value={snapDivision}
             onChange={(e) => setSnapDivision(Number(e.target.value))}
-            className="bg-transparent text-xs text-zinc-300 font-bold outline-none cursor-pointer"
+            className="bg-transparent text-[10px] text-zinc-300 font-bold outline-none cursor-pointer"
           >
             <option value={0}>Snap: Off</option>
             <option value={4}>Snap: 1/4</option>
@@ -215,7 +215,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
           <button onClick={handleVerticalZoomOut} className="p-1.5 hover:bg-white/10 rounded-md text-zinc-400 hover:text-white transition-colors" title="Zoom Out Vertical">
             <ZoomOut size={16} className="rotate-90" />
           </button>
-          <span className="text-xs font-mono text-zinc-400 w-8 text-center">{Math.round(verticalZoomLevel * 100)}%</span>
+          <span className="text-[10px] font-mono text-zinc-400 w-8 text-center">{Math.round(verticalZoomLevel * 100)}%</span>
           <button onClick={handleVerticalZoomIn} className="p-1.5 hover:bg-white/10 rounded-md text-zinc-400 hover:text-white transition-colors" title="Zoom In Vertical">
             <ZoomIn size={16} className="rotate-90" />
           </button>
@@ -223,7 +223,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
         <button onClick={handleZoomOut} className="p-1.5 hover:bg-white/10 rounded-md text-zinc-400 hover:text-white transition-colors" title="Zoom Out Horizontal">
           <ZoomOut size={16} />
         </button>
-        <span className="text-xs font-mono text-zinc-400 flex items-center px-1 w-10 justify-center">{Math.round(zoomLevel * 100)}%</span>
+        <span className="text-[10px] font-mono text-zinc-400 flex items-center px-1 w-10 justify-center">{Math.round(zoomLevel * 100)}%</span>
         <button onClick={handleZoomIn} className="p-1.5 hover:bg-white/10 rounded-md text-zinc-400 hover:text-white transition-colors" title="Zoom In Horizontal">
           <ZoomIn size={16} />
         </button>

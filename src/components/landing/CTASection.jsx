@@ -35,18 +35,18 @@ export default function CTASection() {
 
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-zinc-500/5 opacity-50 pointer-events-none" />
 
-                <div className="text-5xl mb-8 animate-float relative z-10">🎹</div>
-                <h2 className="text-4xl md:text-5xl font-bold text-text-main mb-6 relative z-10">
+                <div className="text-4xl mb-8 animate-float relative z-10">🎹</div>
+                <h2 className="text-3xl md:text-4xl font-bold text-text-main mb-6 relative z-10">
                     Ready to dive into your MIDI files?
                 </h2>
-                <p className="text-xl text-text-muted mb-12 relative z-10">
+                <p className="text-lg text-text-muted mb-12 relative z-10">
                     No installation. No account. Just drag and drop.
                 </p>
 
                 <div className="flex flex-col items-center gap-6 relative z-10">
                     <button 
                         onClick={open}
-                        className="px-10 py-5 rounded-2xl text-white text-lg font-bold transition-all hover:scale-[1.04] active:scale-[0.98] relative group overflow-hidden"
+                        className="px-10 py-5 rounded-2xl text-white text-base font-bold transition-all hover:scale-[1.04] active:scale-[0.98] relative group overflow-hidden"
                         style={{
                             background: 'rgba(255, 255, 255, 0.08)',
                             backdropFilter: 'blur(10px)',
@@ -57,7 +57,7 @@ export default function CTASection() {
                         <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                         <span className="relative z-10">✨ Upload MIDI to Editor</span>
                     </button>
-                    <p className="text-text-muted text-sm font-medium bg-black/20 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md">
+                    <p className="text-text-muted text-xs font-medium bg-black/20 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md">
                         or drag a MIDI file anywhere
                     </p>
                 </div>

@@ -24,7 +24,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
             </span>
             <span className="text-zinc-500 font-mono text-[10px] tracking-widest">{previewStrip}</span>
           </div>
-          <h3 className="text-white text-lg font-bold truncate pr-4 mt-1 transition-colors group-hover:text-purple-400" title={file.name}>
+          <h3 className="text-white text-base font-bold truncate pr-4 mt-1 transition-colors group-hover:text-purple-400" title={file.name}>
             {file.name}
           </h3>
         </div>
@@ -43,7 +43,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
               <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a] rounded-xl border border-white/10 shadow-2xl z-50 overflow-hidden py-2">
                 <button 
                   onClick={(e) => { e.stopPropagation(); e.preventDefault(); onDelete(file.id); setMenuOpen(false); }}
-                  className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 flex items-center gap-2 relative z-50 pointer-events-auto cursor-pointer"
+                  className="w-full text-left px-4 py-2 text-xs text-red-400 hover:bg-white/5 flex items-center gap-2 relative z-50 pointer-events-auto cursor-pointer"
                 >
                   <Trash2 size={14} /> Delete Project
                 </button>
@@ -53,7 +53,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-1 mb-6 relative z-10 text-sm font-medium">
+      <div className="flex flex-col gap-1 mb-6 relative z-10 text-xs font-medium">
         <div className="flex items-center gap-2 text-zinc-300">
           <Activity size={14} className="text-zinc-500" />
           <span>{file.noteCount?.toLocaleString() || 0} Notes</span>
@@ -62,7 +62,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
           <Layers size={14} className="text-zinc-500" />
           <span>{file.trackCount} Track{file.trackCount !== 1 ? 's' : ''} • {durationStr}</span>
         </div>
-        <div className="flex items-center gap-2 text-zinc-500 text-xs mt-1">
+        <div className="flex items-center gap-2 text-zinc-500 text-[10px] mt-1">
           <Clock size={12} className="text-zinc-600" />
           <span>Modified {formattedDate}</span>
         </div>

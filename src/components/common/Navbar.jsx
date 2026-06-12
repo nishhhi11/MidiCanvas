@@ -14,7 +14,7 @@ export default function Navbar() {
             <div className="flex-1 flex items-center justify-start">
                 <Link to="/" className="flex items-center gap-3 group">
                     <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(255,255,240,0.15)]"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(255,255,240,0.15)]"
                         style={{
                             background: "#0A0A0A",
                             border: "1px solid rgba(255, 255, 240, 0.15)",
@@ -22,13 +22,13 @@ export default function Navbar() {
                     >
                         🎹
                     </div>
-                    <h1 className="font-bold text-lg text-[#FFFFF0] tracking-widest group-hover:text-white transition-colors uppercase">
+                    <h1 className="font-bold text-base text-[#FFFFF0] tracking-widest group-hover:text-white transition-colors uppercase">
                         MIDI CANVAS
                     </h1>
                 </Link>
             </div>
 
-            <div className="hidden md:flex items-center justify-center gap-6 font-medium text-sm flex-none">
+            <div className="hidden md:flex items-center justify-center gap-6 font-medium text-xs flex-none">
                 {[
                     { label: "🎹 Piano Roll Editor", path: "/studio" },
                     { label: "📁 MIDI Library", path: "/library" }
@@ -39,7 +39,7 @@ export default function Navbar() {
                         <Link
                             key={label}
                             to={path}
-                            className={`relative px-2 py-1 transition-all duration-300 uppercase tracking-widest text-xs
+                            className={`relative px-2 py-1 transition-all duration-300 uppercase tracking-widest text-[10px]
                                 ${isActive ? "text-[#FFFFF0]" : "text-[#999999] hover:text-[#FFFFF0]"}`}
                         >
                             {label}

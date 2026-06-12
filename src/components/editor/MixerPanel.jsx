@@ -15,7 +15,7 @@ export default function MixerPanel({
 }) {
   return (
     <div className="xl:col-span-1 bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl overflow-y-auto">
-      <h2 className="text-xs text-zinc-400 uppercase tracking-widest font-bold mb-6 flex items-center gap-2">
+      <h2 className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold mb-6 flex items-center gap-2">
         <Settings size={14} /> Tracks Found
       </h2>
       <div className="space-y-4">
@@ -36,17 +36,17 @@ export default function MixerPanel({
                     style={{ backgroundColor: trackColors[track.id] || getTrackColor(track.id) }}
                   />
                 </div>
-                <span className="font-bold text-sm text-white truncate max-w-[120px]" title={track.name}>
+                <span className="font-bold text-xs text-white truncate max-w-[120px]" title={track.name}>
                   {track.name}
                 </span>
               </div>
-              <span className="text-xs text-zinc-600 font-mono">{track.noteCount} notes</span>
+              <span className="text-[10px] text-zinc-600 font-mono">{track.noteCount} notes</span>
             </div>
 
             <div className="flex gap-2">
               <button
                 onClick={() => toggleMute(track.id)}
-                className={`flex-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
+                className={`flex-1 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors ${
                   mutedTracks.has(track.id)
                     ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50'
                     : 'bg-white/5 text-zinc-400 hover:bg-white/10'
@@ -56,7 +56,7 @@ export default function MixerPanel({
               </button>
               <button
                 onClick={() => toggleSolo(track.id)}
-                className={`flex-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
+                className={`flex-1 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors ${
                   soloedTracks.has(track.id)
                     ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
                     : 'bg-white/5 text-zinc-400 hover:bg-white/10'
@@ -80,7 +80,7 @@ export default function MixerPanel({
             </div>
           </div>
         )) : (
-          <p className="text-zinc-500 text-sm">Upload a MIDI file to extract tracks.</p>
+          <p className="text-zinc-500 text-xs">Upload a MIDI file to extract tracks.</p>
         )}
       </div>
     </div>

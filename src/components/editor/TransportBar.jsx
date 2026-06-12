@@ -37,7 +37,7 @@ export default function PlaybackControls({
 
     };
 
-    return (<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"> <h2 className="text-xl font-bold mb-4">
+    return (<div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6"> <h2 className="text-lg font-bold mb-4">
         Playback Controls </h2>
 
         ```

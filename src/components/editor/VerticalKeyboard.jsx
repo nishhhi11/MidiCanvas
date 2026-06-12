@@ -66,7 +66,7 @@ export default function PianoKeyboard({ currentNotes = [] }) {
       }`}
       style={{ left: `${left}%`, width: `${width}%` }}
     >
-      <span className="pointer-events-none text-xs">{note}</span>
+      <span className="pointer-events-none text-[10px]">{note}</span>
     </div>
   );
 }

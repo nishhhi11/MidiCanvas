@@ -12,8 +12,8 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
           <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,255,255,0.02)] border border-white/10">
             <Mailbox size={32} className="text-zinc-500" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">No saved projects yet</h2>
-          <p className="text-zinc-400 max-w-md mb-8 text-lg">
+          <h2 className="text-2xl font-bold text-white mb-4">No saved projects yet</h2>
+          <p className="text-zinc-400 max-w-md mb-8 text-base">
             Your saved MIDI projects will appear here. Head over to the piano roll editor to import and save your first track!
           </p>
           <button
@@ -38,7 +38,7 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
 
       return (
         <div className="text-center py-20 border border-white/5 bg-[#111] rounded-3xl mt-8">
-          <h2 className="text-xl font-bold text-zinc-400">No results found</h2>
+          <h2 className="text-lg font-bold text-zinc-400">No results found</h2>
           <p className="text-zinc-500 mt-2">
             Try adjusting your search query or filters.
           </p>
@@ -58,7 +58,7 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
         <section>
           <div className="flex items-center gap-2 mb-6">
             <Clock size={18} className="text-purple-400" />
-            <h2 className="text-xl font-bold text-white">Recent Projects</h2>
+            <h2 className="text-lg font-bold text-white">Recent Projects</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recentFiles.map((file) => (
@@ -77,7 +77,7 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
         <section>
           <div className="flex items-center gap-2 mb-6">
             <Mailbox size={18} className="text-zinc-500" />
-            <h2 className="text-xl font-bold text-white">All Projects</h2>
+            <h2 className="text-lg font-bold text-white">All Projects</h2>
           </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {otherFiles.map((file) => (
@@ -95,8 +95,8 @@ export default function SavedFilesList({ files, onLoad, onDelete, onExport, hasF
       {recordings.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-6 mt-8">
-            <span className="text-red-500 animate-pulse text-xl">🔴</span>
-            <h2 className="text-xl font-bold text-white">My Recordings</h2>
+            <span className="text-red-500 animate-pulse text-lg">🔴</span>
+            <h2 className="text-lg font-bold text-white">My Recordings</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recordings.map((file) => (

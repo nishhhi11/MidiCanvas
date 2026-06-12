@@ -36,7 +36,7 @@ export default function HowItWorksSection() {
 
     return (
         <section className="py-32 px-6 max-w-7xl mx-auto border-t border-white/5">
-            <h2 className="text-3xl font-bold text-white text-center mb-24 tracking-wider">HOW IT WORKS</h2>
+            <h2 className="text-2xl font-bold text-white text-center mb-24 tracking-wider">HOW IT WORKS</h2>
 
             <div className="relative max-w-5xl mx-auto">
 
@@ -78,8 +78,8 @@ export default function HowItWorksSection() {
                                     </div>
                                 </div>
 
-                                <h3 className={`text-lg font-bold tracking-wider mb-3 transition-colors duration-500 ${isActive ? 'text-white' : 'text-zinc-600'}`}>{step.title}</h3>
-                                <p className={`text-sm leading-relaxed transition-colors duration-500 max-w-[200px] mx-auto ${isActive ? 'text-zinc-400' : 'text-zinc-700'}`}>{step.desc}</p>
+                                <h3 className={`text-base font-bold tracking-wider mb-3 transition-colors duration-500 ${isActive ? 'text-white' : 'text-zinc-600'}`}>{step.title}</h3>
+                                <p className={`text-xs leading-relaxed transition-colors duration-500 max-w-[200px] mx-auto ${isActive ? 'text-zinc-400' : 'text-zinc-700'}`}>{step.desc}</p>
                             </div>
                         );
                     })}

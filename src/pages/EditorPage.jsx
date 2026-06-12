@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from "framer-motion";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { parseMidi } from "../utils/midiParser";
 import { exportToMidi, generateMidiBinary } from "../utils/fileExporter";
@@ -234,7 +235,10 @@ export default function EditorPage() {
   const activeVoicesCount = mergedActiveNotes.length;
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className="h-screen flex flex-col bg-black text-[#FFFFF0] overflow-hidden"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
@@ -243,7 +247,7 @@ export default function EditorPage() {
       <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-[#FFFFF0]">
+            <h1 className="text-lg font-bold text-[#FFFFF0]">
               🎹 MIDI CANVAS
             </h1>
             <div className="h-5 w-px bg-[#2a2a2a]" />
@@ -252,7 +256,7 @@ export default function EditorPage() {
                 <Link 
                   key={tab} 
                   to={tab === 'EDITOR' ? '/studio' : tab === 'LIBRARY' ? '/library' : '/'}
-                  className={`px-3 py-2 rounded-md text-base font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
                     tab === 'EDITOR' 
                       ? 'bg-[#2a2a2a] text-[#FFFFF0]' 
                       : 'text-[#888888] hover:text-[#FFFFF0] hover:bg-[#1a1a1a]'
@@ -265,7 +269,7 @@ export default function EditorPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-base text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
+            <span className="text-sm text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
               📁 {uploadedFile || 'No file loaded'}
             </span>
             <button 
@@ -285,13 +289,13 @@ export default function EditorPage() {
                   alert("Saved to Library!");
                 } catch (err) { console.error("Failed to save", err); }
               }}
-              className="px-3 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] rounded-md text-base transition-all text-[#FFFFF0]"
+              className="px-3 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] rounded-md text-sm transition-all text-[#FFFFF0]"
             >
               💾 SAVE
             </button>
             <button 
               onClick={() => exportToMidi(midiData)}
-              className="px-3 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] rounded-md text-base transition-all text-[#FFFFF0]"
+              className="px-3 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] rounded-md text-sm transition-all text-[#FFFFF0]"
             >
               📤 EXPORT
             </button>
@@ -302,7 +306,7 @@ export default function EditorPage() {
       <div className="flex-1 flex min-h-0 p-4 gap-4">
 
         <div className="w-72 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
-          <div className="text-base font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
+          <div className="text-sm font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-2">
             <button 
@@ -318,26 +322,26 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleSeek(0)}
-              className="w-10 h-10 rounded-full text-base bg-[#1a1a1a] hover:bg-[#2a2a2a] text-base text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Rewind to Start"
             >
               ⏪
             </button>
             <button 
               onClick={() => isPlaying ? handlePause() : handlePlay()}
-              className="w-12 h-12 rounded-full text-xl bg-[#2a2a2a] hover:bg-[#3a3a3a] flex items-center justify-center text-base text-[#FFFFF0]"
+              className="w-12 h-12 rounded-full text-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] flex items-center justify-center text-sm text-[#FFFFF0]"
             >
               {isPlaying ? '⏸' : '▶'}
             </button>
             <button 
               onClick={() => handleStop()}
-              className="w-10 h-10 rounded-full text-base bg-[#1a1a1a] hover:bg-[#2a2a2a] text-base text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
             >
               ⏹️
             </button>
             <button 
               onClick={() => handleSeek(Math.min(totalTime, currentTime + 5))}
-              className="w-10 h-10 rounded-full text-base bg-[#1a1a1a] hover:bg-[#2a2a2a] text-base text-[#FFFFF0]"
+              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Fast Forward"
             >
               ⏩
@@ -346,7 +350,7 @@ export default function EditorPage() {
 
           <button 
             onClick={toggleLoop}
-            className={`text-base py-2 rounded-md mb-2 transition-all ${
+            className={`text-sm py-2 rounded-md mb-2 transition-all ${
               isLooping 
                 ? 'bg-[#2a2a2a] text-[#D4C5A9] border border-[#D4C5A9]/30' 
                 : 'bg-[#1a1a1a] text-[#888888] hover:bg-[#2a2a2a]'
@@ -355,20 +359,20 @@ export default function EditorPage() {
             🔁 {isLooping ? 'LOOP ACTIVE' : 'LOOP'}
           </button>
 
-          <div className="text-center font-mono text-2xl font-bold text-[#D4C5A9] mb-2">
+          <div className="text-center font-mono text-xl font-bold text-[#D4C5A9] mb-2">
             {formatTime(currentTime)} / {formatTime(totalTime)}
           </div>
 
           <div className="space-y-2">
             <div>
-              <div className="text-base text-[#888888] mb-1 flex justify-between">
+              <div className="text-sm text-[#888888] mb-1 flex justify-between">
                 <span>🎯 TEMPO</span>
                 <span className="text-[#D4C5A9]">{tempo} BPM</span>
               </div>
               <div className="flex gap-1">
                 <button 
                   onClick={() => updateMidiMetadata({ tempo: Math.max(40, tempo - 5) })} 
-                  className="w-7 h-7 rounded text-xs bg-[#1a1a1a] text-[#FFFFF0] text-base hover:bg-[#2a2a2a]"
+                  className="w-7 h-7 rounded text-[10px] bg-[#1a1a1a] text-[#FFFFF0] text-sm hover:bg-[#2a2a2a]"
                 >
                   −
                 </button>
@@ -382,7 +386,7 @@ export default function EditorPage() {
                 />
                 <button 
                   onClick={() => updateMidiMetadata({ tempo: Math.min(240, tempo + 5) })} 
-                  className="w-7 h-7 rounded text-xs bg-[#1a1a1a] text-[#FFFFF0] text-base hover:bg-[#2a2a2a]"
+                  className="w-7 h-7 rounded text-[10px] bg-[#1a1a1a] text-[#FFFFF0] text-sm hover:bg-[#2a2a2a]"
                 >
                   +
                 </button>
@@ -390,7 +394,7 @@ export default function EditorPage() {
             </div>
 
             <div>
-              <div className="text-base text-[#888888] mb-1 flex justify-between">
+              <div className="text-sm text-[#888888] mb-1 flex justify-between">
                 <span>🔊 VOLUME</span>
                 <span className="text-[#D4C5A9]">{Math.round(masterVolume * 100)}%</span>
               </div>
@@ -409,14 +413,14 @@ export default function EditorPage() {
 
         <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col min-w-0 relative">
           <div className="flex justify-between items-center mb-2 flex-shrink-0">
-            <div className="text-base font-semibold text-[#888888] uppercase tracking-wide">
+            <div className="text-sm font-semibold text-[#888888] uppercase tracking-wide">
               🎼 Piano Roll Editor
             </div>
             <div className="flex gap-2">
               <select 
                 value={snap} 
                 onChange={(e) => setSnap(e.target.value)} 
-                className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-md px-2 py-2.5 text-base text-[#FFFFF0]"
+                className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-md px-2 py-2.5 text-sm text-[#FFFFF0]"
               >
                 <option>1/4</option>
                 <option>1/8</option>
@@ -431,7 +435,7 @@ export default function EditorPage() {
                   ref={fileInputRef}
                   className="hidden" 
                 />
-                <span className="text-base bg-[#1a1a1a] px-2 py-2.5 rounded-md text-[#888888] hover:text-[#FFFFF0] cursor-pointer">
+                <span className="text-sm bg-[#1a1a1a] px-2 py-2.5 rounded-md text-[#888888] hover:text-[#FFFFF0] cursor-pointer">
                   + Replace MIDI
                 </span>
               </label>
@@ -442,12 +446,12 @@ export default function EditorPage() {
             {!hasMIDILoaded ? (
               <div className="absolute inset-0 flex items-center justify-center bg-black/90 rounded-xl z-10">
                 <div className="text-center">
-                  <div className="text-4xl mb-2">🎹</div>
-                  <div className="text-base text-[#888888] mb-2">Ready to create?</div>
-                  <div className="text-base text-[#555555] mb-3">Drag and drop a .mid file anywhere</div>
+                  <div className="text-3xl mb-2">🎹</div>
+                  <div className="text-sm text-[#888888] mb-2">Ready to create?</div>
+                  <div className="text-sm text-[#555555] mb-3">Drag and drop a .mid file anywhere</div>
                   <label className="cursor-pointer">
                     <input type="file" accept=".mid,.midi" onChange={handleFileUpload} className="hidden" />
-                    <span className="px-4 py-2.5 bg-[#1a1a1a] rounded-md text-base hover:bg-[#2a2a2a] text-[#FFFFF0] cursor-pointer">
+                    <span className="px-4 py-2.5 bg-[#1a1a1a] rounded-md text-sm hover:bg-[#2a2a2a] text-[#FFFFF0] cursor-pointer">
                       Select MIDI File
                     </span>
                   </label>
@@ -468,7 +472,7 @@ export default function EditorPage() {
             {isParsing && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20 rounded-xl">
                  <div className="w-8 h-8 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin mb-2" />
-                 <span className="text-[#888888] text-base">Parsing MIDI...</span>
+                 <span className="text-[#888888] text-sm">Parsing MIDI...</span>
               </div>
             )}
           </div>
@@ -519,7 +523,7 @@ export default function EditorPage() {
                   }`}
                   style={{ zIndex: 1 }}
                 >
-                  {showNoteNames && <span className="text-xs font-bold pointer-events-none mb-1">{note}</span>}
+                  {showNoteNames && <span className="text-[10px] font-bold pointer-events-none mb-1">{note}</span>}
                   {highlightKeys && <span className="text-[9px] font-mono pointer-events-none opacity-50 bg-black/10 px-1 rounded">{mappedKey}</span>}
                 </div>
               );
@@ -597,12 +601,12 @@ export default function EditorPage() {
         <div className="grid grid-cols-4 gap-3">
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               🎚️ Mixer
             </div>
             <div className="space-y-1 max-h-24 overflow-y-auto custom-scrollbar">
               {!hasMIDILoaded ? (
-                 <div className="text-base text-[#555555] italic">No tracks loaded</div>
+                 <div className="text-sm text-[#555555] italic">No tracks loaded</div>
               ) : (
                  midiData?.tracks?.map((track, idx) => {
                    const color = trackColors[track.id] || getTrackColor(track.id);
@@ -610,7 +614,7 @@ export default function EditorPage() {
                    const isSoloed = soloedTracks.has(track.id);
                    return (
                     <div key={track.id || idx} className="flex flex-col mb-2">
-                      <div className="flex items-center justify-between text-base">
+                      <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-1">
 
                           <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
@@ -627,13 +631,13 @@ export default function EditorPage() {
                         <div className="flex gap-1">
                           <button 
                             onClick={() => toggleMute(track.id)}
-                            className={`w-7 h-7 rounded text-xs text-base ${isMuted ? 'bg-red-900/50 text-red-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
+                            className={`w-7 h-7 rounded text-[10px] text-sm ${isMuted ? 'bg-red-900/50 text-red-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
                           >
                             M
                           </button>
                           <button 
                             onClick={() => toggleSolo(track.id)}
-                            className={`w-7 h-7 rounded text-xs text-base ${isSoloed ? 'bg-yellow-900/50 text-yellow-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
+                            className={`w-7 h-7 rounded text-[10px] text-sm ${isSoloed ? 'bg-yellow-900/50 text-yellow-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
                           >
                             S
                           </button>
@@ -657,7 +661,7 @@ export default function EditorPage() {
               )}
             </div>
             <div className="border-t border-[#2a2a2a] pt-1 mt-1">
-              <div className="flex justify-between text-base">
+              <div className="flex justify-between text-sm">
                 <span className="text-[#888888]">MASTER</span>
                 <span className="text-[#D4C5A9]">{Math.round(masterVolume * 100)}%</span>
               </div>
@@ -665,18 +669,18 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               🎯 Learning Mode
             </div>
             <div className="space-y-1.5">
               <div>
-                <div className="text-base text-[#888888] mb-0.5">Speed</div>
+                <div className="text-sm text-[#888888] mb-0.5">Speed</div>
                 <div className="flex gap-1">
                   {[0.5, 0.75, 1.0, 1.25].map(speed => (
                     <button 
                       key={speed} 
                       onClick={() => setPlaybackRate(speed)} 
-                      className={`flex-1 py-2.5 rounded text-base transition-all ${
+                      className={`flex-1 py-2.5 rounded text-sm transition-all ${
                         playbackRate === speed 
                           ? 'bg-[#2a2a2a] text-[#D4C5A9]' 
                           : 'bg-[#1a1a1a] text-[#888888] hover:bg-[#2a2a2a]'
@@ -690,19 +694,19 @@ export default function EditorPage() {
               <div className="flex gap-1">
                 <button 
                   onClick={() => setLoopPoints(currentTime, loopEnd)} 
-                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-base text-[#FFFFF0] hover:bg-[#2a2a2a]"
+                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟳ Set Start
                 </button>
                 <button 
                   onClick={() => setLoopPoints(loopStart, currentTime)} 
-                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-base text-[#FFFFF0] hover:bg-[#2a2a2a]"
+                  className="flex-1 py-2.5 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟲ Set End
                 </button>
               </div>
               <div className="flex gap-2">
-                <label className="flex items-center gap-1 text-base text-[#FFFFF0] cursor-pointer">
+                <label className="flex items-center gap-1 text-sm text-[#FFFFF0] cursor-pointer">
                   <input 
                     type="checkbox" 
                     checked={highlightKeys} 
@@ -711,7 +715,7 @@ export default function EditorPage() {
                   />
                   Keys
                 </label>
-                <label className="flex items-center gap-1 text-base text-[#FFFFF0] cursor-pointer">
+                <label className="flex items-center gap-1 text-sm text-[#FFFFF0] cursor-pointer">
                   <input 
                     type="checkbox" 
                     checked={showNoteNames} 
@@ -725,16 +729,16 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               📊 Status
             </div>
             <div className="grid grid-cols-2 gap-1 text-center">
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-xl lg:text-2xl font-bold text-[#D4C5A9]">{totalNotesCount}</div>
+                <div className="text-lg lg:text-xl font-bold text-[#D4C5A9]">{totalNotesCount}</div>
                 <div className="text-[9px] lg:text-[11px] text-[#888888]">NOTES</div>
               </div>
               <div className="bg-[#1a1a1a] rounded p-1">
-                <div className="text-xl lg:text-2xl font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
+                <div className="text-lg lg:text-xl font-bold text-[#D4C5A9]">{activeVoicesCount}</div>
                 <div className="text-[9px] lg:text-[11px] text-[#888888]">VOICES</div>
               </div>
             </div>
@@ -746,10 +750,10 @@ export default function EditorPage() {
           </div>
 
           <div className="bg-black rounded-lg border border-[#2a2a2a] p-2">
-            <div className="text-base font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
+            <div className="text-sm font-semibold text-[#888888] mb-1.5 uppercase tracking-wide">
               ⌨️ Shortcuts
             </div>
-            <div className="space-y-0.5 text-xs lg:text-sm">
+            <div className="space-y-0.5 text-[10px] lg:text-xs">
               <div className="flex justify-between">
                 <span className="text-[#FFFFF0]">Play/Pause</span>
                 <span className="text-[#D4C5A9]">Space</span>
@@ -767,6 +771,6 @@ export default function EditorPage() {
 
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
