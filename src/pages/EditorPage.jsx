@@ -244,13 +244,13 @@ export default function EditorPage() {
       onDrop={handleDrop}
     >
 
-      <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-4 py-2">
+      <header className="flex-shrink-0 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm px-3 py-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-lg font-bold text-[#FFFFF0]">
               🎹 MIDI CANVAS
             </h1>
-            <div className="h-5 w-px bg-[#2a2a2a]" />
+            <div className="h-4 w-px bg-[#2a2a2a]" />
             <div className="flex gap-1">
               {['EDITOR', 'LIBRARY', 'BROWSER'].map(tab => (
                 <Link 
@@ -303,15 +303,15 @@ export default function EditorPage() {
         </div>
       </header>
 
-      <div className="flex-1 flex min-h-0 p-2 gap-2">
+      <div className="flex-1 flex min-h-0 p-1 gap-1">
 
-        <div className="w-56 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col">
+        <div className="w-48 flex-shrink-0 bg-black rounded-xl border border-[#2a2a2a] p-1.5 flex flex-col">
           <div className="text-sm font-semibold text-[#888888] mb-2 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-2">
             <button 
               onClick={toggleRecord}
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                 isRecording 
                   ? 'bg-red-600 text-white shadow-[0_0_15px_#dc2626] animate-pulse' 
                   : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#FFFFF0]'
@@ -322,26 +322,26 @@ export default function EditorPage() {
             </button>
             <button 
               onClick={() => handleSeek(0)}
-              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Rewind to Start"
             >
               ⏪
             </button>
             <button 
               onClick={() => isPlaying ? handlePause() : handlePlay()}
-              className="w-12 h-12 rounded-full text-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] flex items-center justify-center text-sm text-[#FFFFF0]"
+              className="w-8 h-8 rounded-full text-base bg-[#2a2a2a] hover:bg-[#3a3a3a] flex items-center justify-center text-sm text-[#FFFFF0]"
             >
               {isPlaying ? '⏸' : '▶'}
             </button>
             <button 
               onClick={() => handleStop()}
-              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
             >
               ⏹️
             </button>
             <button 
               onClick={() => handleSeek(Math.min(totalTime, currentTime + 5))}
-              className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
+              className="w-8 h-8 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Fast Forward"
             >
               ⏩
@@ -411,7 +411,7 @@ export default function EditorPage() {
           </div>
         </div>
 
-        <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-3 flex flex-col min-w-0 relative">
+        <div className="flex-1 bg-black rounded-xl border border-[#2a2a2a] p-1.5 flex flex-col min-w-0 relative">
           <div className="flex justify-between items-center mb-2 flex-shrink-0">
             <div className="text-sm font-semibold text-[#888888] uppercase tracking-wide">
               🎼 Piano Roll Editor
@@ -451,7 +451,7 @@ export default function EditorPage() {
                   <div className="text-sm text-[#555555] mb-3">Drag and drop a .mid file anywhere</div>
                   <label className="cursor-pointer">
                     <input type="file" accept=".mid,.midi" onChange={handleFileUpload} className="hidden" />
-                    <span className="px-4 py-2.5 bg-[#1a1a1a] rounded-md text-sm hover:bg-[#2a2a2a] text-[#FFFFF0] cursor-pointer">
+                    <span className="px-3 py-1.5 bg-[#1a1a1a] rounded-md text-sm hover:bg-[#2a2a2a] text-[#FFFFF0] cursor-pointer">
                       Select MIDI File
                     </span>
                   </label>
@@ -480,7 +480,7 @@ export default function EditorPage() {
       </div>
 
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
-        <div className="w-full max-w-6xl relative h-24 select-none">
+        <div className="w-full max-w-6xl relative h-16 select-none">
 
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
