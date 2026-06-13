@@ -34,7 +34,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
   const keyboardRef = useRef(null);
   const velocityRef = useRef(null);
 
-  const { updateNote, deleteNote } = useMidiStore(useShallow(state => ({ updateNote: state.updateNote, deleteNote: state.deleteNote })));
+  const { updateNote, deleteNote, addNote } = useMidiStore(useShallow(state => ({ updateNote: state.updateNote, deleteNote: state.deleteNote, addNote: state.addNote })));
   const { loopStart, loopEnd, setLoopPoints, isLooping } = usePlaybackStore(useShallow(state => ({ loopStart: state.loopStart, loopEnd: state.loopEnd, setLoopPoints: state.setLoopPoints, isLooping: state.isLooping })));
 
   const ROW_HEIGHT = BASE_ROW_HEIGHT * verticalZoomLevel;
@@ -75,6 +75,47 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
     const x = e.clientX - rect.left;
     const time = x / pixelsPerSecond;
     onSeek(Math.max(0, Math.min(time, duration)));
+  };
+
+  const handleCanvasDoubleClick = (e) => {
+    if (e.target !== e.currentTarget && !e.target.classList.contains('bg-[#1a1a1a]') && !e.target.classList.contains('bg-[#111111]')) {
+      return;
+    }
+    
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left + containerRef.current.scrollLeft;
+    
+    const noteAreaRect = e.currentTarget.getBoundingClientRect();
+    const y = e.clientY - noteAreaRect.top;
+
+    let time = x / pixelsPerSecond;
+    
+    if (snapDivision > 0) {
+      const beatsPerMinute = tempo;
+      const secondsPerBeat = 60 / beatsPerMinute;
+      const secondsPerDivision = secondsPerBeat * (4 / snapDivision);
+      time = Math.round(time / secondsPerDivision) * secondsPerDivision;
+    }
+
+    const midi = START_MIDI + (TOTAL_KEYS - 1 - Math.floor(y / ROW_HEIGHT));
+    if (midi < START_MIDI || midi > END_MIDI) return;
+
+    const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const noteName = NOTE_NAMES[midi % 12];
+    const octave = Math.floor(midi / 12) - 1;
+
+    const newNote = {
+      id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      midi,
+      time,
+      duration: snapDivision > 0 ? (60 / tempo) * (4 / snapDivision) : 0.5,
+      name: `${noteName}${octave}`,
+      velocity: 0.8,
+      track: 0
+    };
+
+    addNote(newNote);
   };
 
   const handleLoopPointerDown = (e, type) => {
@@ -271,6 +312,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
             className="relative"
             style={{ width: `${totalWidth}px`, height: `${totalHeight}px` }}
             onPointerDown={handleCanvasClick}
+            onDoubleClick={handleCanvasDoubleClick}
             onPointerMove={handlePointerMoveCanvas}
             onPointerEnter={() => setIsHovering(true)}
             onPointerLeave={() => setIsHovering(false)}
@@ -351,6 +393,7 @@ export default function StudioPianoRoll({ rawNotes = [], duration = 0, onSeek, t
                         });
                       }}
                       onUpdate={handleNoteUpdate}
+                      onDelete={deleteNote}
                     />
                   </div>
                 );

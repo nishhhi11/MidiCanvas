@@ -41,6 +41,20 @@ export const useMidiStore = create((set) => ({
     };
   }),
 
+  addNote: (newNote) => set((state) => {
+    if (!state.midiData) {
+      return { midiData: { notes: [newNote], duration: newNote.time + newNote.duration }, history: { past: [], future: [] } };
+    }
+    const notes = state.midiData.notes || [];
+    const past = [...state.history.past, notes].slice(-MAX_HISTORY);
+    const newNotes = [...notes, newNote];
+    
+    return { 
+      midiData: { ...state.midiData, notes: newNotes },
+      history: { past, future: [] }
+    };
+  }),
+
   undo: () => set((state) => {
     if (state.history.past.length === 0 || !state.midiData) return state;
 
