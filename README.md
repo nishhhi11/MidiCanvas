@@ -277,4 +277,3 @@ The project showcases frontend engineering concepts including binary file proces
 
 **Nishi Chopda**
 
-ReactJS Project Evaluation Submission
