@@ -1,15 +1,36 @@
 import React from 'react';
 
+/*
+PURPOSE:
+Catches JavaScript errors anywhere in its child component tree, logs those errors, and displays a fallback UI instead of crashing the whole React application.
+
+REACT CONCEPT:
+Error Boundaries (Must be built using Class Components in React).
+
+VIVA QUESTION:
+Why is this component written as a Class Component instead of a Functional Component with Hooks?
+
+VIVA ANSWER:
+As of React 18, there is no Hook equivalent to `getDerivedStateFromError` or `componentDidCatch`. Error Boundaries are the one specific feature in modern React that strictly requires Class Components.
+*/
 export class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
+  /*
+  PURPOSE:
+  Called during the "render" phase. It updates state so the next render will show the fallback UI.
+  */
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
 
+  /*
+  PURPOSE:
+  Called during the "commit" phase. Used for logging the error to an external service or the console.
+  */
   componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
   }
@@ -29,6 +50,30 @@ export class ErrorBoundary extends React.Component {
         </div>
       );
     }
+    // If no error, render the normal application tree
     return this.props.children; 
   }
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+A protective wrapper that prevents the entire web application from going blank if a sub-component throws an unexpected error.
+
+Data Flow:
+Child Component Throws Error -> React bubbles error up to `ErrorBoundary` -> `getDerivedStateFromError` catches it -> `state.hasError` becomes true -> Renders Fallback UI instead of children.
+
+React Concepts Used:
+- Class Components.
+- Lifecycle Methods (`getDerivedStateFromError`, `componentDidCatch`).
+- `this.props.children` to render nested components.
+
+Most Likely Viva Questions:
+1. What kind of errors does an Error Boundary catch?
+
+Expected Answers:
+1. It catches errors during rendering, in lifecycle methods, and in constructors of the whole tree below them. However, it does *not* catch errors inside event handlers (like a button click), asynchronous code (like `setTimeout`), server-side rendering, or errors thrown in the ErrorBoundary itself.
+*/

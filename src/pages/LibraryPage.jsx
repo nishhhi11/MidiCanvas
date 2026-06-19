@@ -9,6 +9,13 @@ import { parseMidi } from "../utils/midiParser";
 import { BackgroundAnimations } from '../components/common/BackgroundAnimations';
 import { Search, HardDrive, FileAudio, Calendar, Activity, Database, Upload } from "lucide-react";
 
+/*
+PURPOSE:
+The page component that displays all saved MIDI files from IndexedDB. It handles sorting, searching, and loading files back into the editor.
+
+REACT CONCEPT:
+Hooks (`useState`, `useMemo`), Routing (`useNavigate`), and Global State (`useLibraryStore`).
+*/
 export default function LibraryPage() {
     const navigate = useNavigate();
     const { savedFiles, deleteFile, getFileRawData } = useLibraryStore();
@@ -22,6 +29,13 @@ export default function LibraryPage() {
     const totalNotes = savedFiles.reduce((acc, f) => acc + (f.noteCount || 0), 0);
     const lastBackup = savedFiles.length > 0 ? new Date(Math.max(...savedFiles.map(f => f.uploadedAt))).toLocaleDateString() : "Never";
 
+    /*
+    VIVA QUESTION:
+    Why use `useMemo` here for `filteredFiles`?
+
+    VIVA ANSWER:
+    Because sorting an array of objects is computationally expensive. By wrapping the filter and sort logic in `useMemo`, we ensure this calculation only runs when `savedFiles`, `searchQuery`, or `sortBy` actually change. If the component re-renders for any other reason, it skips the expensive sort and returns the cached array.
+    */
     const filteredFiles = useMemo(() => {
         let files = [...savedFiles];
 
@@ -48,6 +62,10 @@ export default function LibraryPage() {
         return files;
     }, [savedFiles, searchQuery, sortBy]);
 
+    /*
+    PURPOSE:
+    Fetches the heavy raw binary data from IndexedDB, parses it, sets it in the active MIDI store, and routes the user to the Editor.
+    */
     const handleLoadFile = async (file) => {
         try {
             const rawData = await getFileRawData(file.id);

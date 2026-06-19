@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Preparation Checklist</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --muted: #94a3b8;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1 {
+            text-align: center;
+            color: var(--accent-hover);
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+        .category {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .category h2 {
+            margin-top: 0;
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: normal;
+        }
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            margin: 0.75rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .checkbox-wrapper:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--muted);
+            border-radius: 4px;
+            margin-right: 12px;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        input[type="checkbox"]:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+        input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        label {
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 1.1rem;
+            flex-grow: 1;
+            transition: color 0.2s;
+        }
+        input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: var(--muted);
+        }
+        .overall-progress {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 10;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+        button.reset {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+            float: right;
+            transition: all 0.2s;
+        }
+        button.reset:hover {
+            background: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎓 Viva Preparation Checklist</h1>
+    <div class="subtitle">Track your mastery of the Piano Roll codebase. Your progress is saved automatically in your browser.</div>
+
+    <div class="overall-progress">
+        <div class="progress-stats">
+            <span>Overall Mastery</span>
+            <span id="overall-text">0 / 51 (0%)</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="overall-bar"></div>
+        </div>
+    </div>
+
+    <div id="checklist-container"></div>
+
+    <button class="reset" onclick="resetProgress()">Reset All Progress</button>
+
+    <script>
+        const categories = [
+            {
+                name: "🚀 Priority 1: Core Architecture",
+                files: ["midi.worker.js", "midiParser.js", "audioEngine.js", "playbackEngine.js", "PianoRollCanvas.jsx", "useMidiParser.js", "usePlayback.js"]
+            },
+            {
+                name: "📦 State Management & Data",
+                files: ["midiStore.js", "playbackStore.js", "libraryStore.js", "uiStore.js", "useIndexedDB.js"]
+            },
+            {
+                name: "🧠 Smart Custom Hooks",
+                files: ["useKeyboardPiano.js", "useLearnMode.js", "usePianoRoll.js", "useWebAudio.js"]
+            },
+            {
+                name: "🛠️ Utilities & Math",
+                files: ["fileExporter.js", "inputManager.js", "noteCalculator.js", "quantization.js", "colors.js", "keyMap.js", "midiTypes.js"]
+            },
+            {
+                name: "📄 Pages (Entry Points)",
+                files: ["App.jsx", "main.jsx", "EditorPage.jsx", "LibraryPage.jsx", "LandingPage.jsx"]
+            },
+            {
+                name: "🎛️ Editor Components",
+                files: ["MixerPanel.jsx", "TransportBar.jsx", "VelocityLane.jsx", "Playhead.jsx", "TelemetryOverlay.jsx", "Sidebar.jsx", "DraggableNote.jsx"]
+            },
+            {
+                name: "🎹 Keyboard Components",
+                files: ["HorizontalKeyboard.jsx", "VerticalKeyboard.jsx", "WhiteKey.jsx", "BlackKey.jsx"]
+            },
+            {
+                name: "🎨 Common Components",
+                files: ["Navbar.jsx", "Footer.jsx", "ThemeProvider.jsx", "ErrorBoundary.jsx", "BackgroundAnimations.jsx"]
+            },
+            {
+                name: "🏢 Landing & Library Components",
+                files: ["HeroSection.jsx", "FeaturesSection.jsx", "HowItWorksSection.jsx", "CTASection.jsx", "SavedFilesList.jsx", "FileCard.jsx", "FileUploader.jsx"]
+            }
+        ];
+
+        let savedData = JSON.parse(localStorage.getItem('vivaProgress')) || {};
+
+        function saveProgress() {
+            localStorage.setItem('vivaProgress', JSON.stringify(savedData));
+            updateOverallProgress();
+        }
+
+        function updateOverallProgress() {
+            let total = 0;
+            let checked = 0;
+            
+            categories.forEach((cat, cIdx) => {
+                let catTotal = cat.files.length;
+                let catChecked = 0;
+                
+                cat.files.forEach(file => {
+                    total++;
+                    if (savedData[file]) {
+                        checked++;
+                        catChecked++;
+                    }
+                });
+                
+                const catText = document.getElementById(`cat-text-${cIdx}`);
+                if (catText) {
+                    catText.innerText = `${catChecked}/${catTotal}`;
+                }
+            });
+
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+            document.getElementById('overall-text').innerText = `${checked} / ${total} (${percent}%)`;
+            document.getElementById('overall-bar').style.width = `${percent}%`;
+        }
+
+        function toggleFile(file, isChecked) {
+            savedData[file] = isChecked;
+            saveProgress();
+        }
+
+        function resetProgress() {
+            if (confirm("Are you sure you want to reset your progress?")) {
+                savedData = {};
+                saveProgress();
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updateOverallProgress();
+            }
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            
+            categories.forEach((cat, cIdx) => {
+                const catDiv = document.createElement('div');
+                catDiv.className = 'category';
+                
+                const header = document.createElement('h2');
+                header.innerHTML = `<span>${cat.name}</span> <span class="progress-text" id="cat-text-${cIdx}">0/${cat.files.length}</span>`;
+                catDiv.appendChild(header);
+
+                cat.files.forEach((file, fIdx) => {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'checkbox-wrapper';
+                    
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.id = `cb-${cIdx}-${fIdx}`;
+                    cb.checked = !!savedData[file];
+                    cb.onchange = (e) => toggleFile(file, e.target.checked);
+                    
+                    const lbl = document.createElement('label');
+                    lbl.htmlFor = cb.id;
+                    lbl.innerText = file;
+                    
+                    wrap.appendChild(cb);
+                    wrap.appendChild(lbl);
+                    catDiv.appendChild(wrap);
+                });
+                
+                container.appendChild(catDiv);
+            });
+            
+            updateOverallProgress();
+        }
+
+        renderChecklist();
+    </script>
+</body>
+</html>

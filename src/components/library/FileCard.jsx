@@ -1,15 +1,27 @@
 import { Play, Trash2, Edit3, Download, MoreVertical, Clock, Layers, Activity, Calendar } from "lucide-react";
 import { useState } from "react";
 
+/*
+PURPOSE:
+Displays a single saved MIDI file as a card in the user's Library. Provides actions to open, preview, export, or delete the file.
+
+REACT CONCEPT:
+Component with local UI state (dropdown menu).
+*/
 export default function FileCard({ file, onLoad, onDelete, onExport }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  /*
+  PURPOSE:
+  Formats the UNIX timestamp stored in IndexedDB into a human-readable date.
+  */
   const formattedDate = new Date(file.uploadedAt).toLocaleDateString('en-US', {
     month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
   const durationStr = `${Math.floor(file.duration / 60)}:${Math.floor(file.duration % 60).toString().padStart(2, '0')}`;
 
+  // Fake "waveform" visualization based on the file ID for aesthetic variety
   const previewStrips = ["▁▁▃▅▃▂▂▅▇▆▃▂", "▁▂▄▃▂▅▆▃▂▁▃▄▆", "▃▅▇▆▅▃▂▂▃▅▇▆▅", "▂▃▅▆▇▆▅▃▂▂▃▅▆", "▁▃▄▅▆▇▆▅▄▃▁▁▃"];
   const previewStrip = previewStrips[file.id.length % previewStrips.length];
 
@@ -29,6 +41,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
           </h3>
         </div>
 
+        {/* Action Menu (Three dots) */}
         <div className="relative shrink-0">
           <button 
             onClick={() => setMenuOpen(!menuOpen)}
@@ -37,8 +50,16 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
             <MoreVertical size={16} />
           </button>
 
+          {/* 
+          VIVA QUESTION:
+          What is the purpose of the `onClick={(e) => { e.stopPropagation(); ... }}` below?
+
+          VIVA ANSWER:
+          If the dropdown menu sits inside a larger clickable card (or if clicking anywhere else triggers another action), clicking "Delete" would normally bubble up the DOM tree and trigger the parent's click handler too. `e.stopPropagation()` stops this event bubbling, ensuring only the delete action occurs.
+          */}
           {menuOpen && (
             <>
+              {/* Invisible backdrop to close the menu when clicking outside */}
               <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
               <div className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a] rounded-xl border border-white/10 shadow-2xl z-50 overflow-hidden py-2">
                 <button 
@@ -53,6 +74,7 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
         </div>
       </div>
 
+      {/* File Metadata display */}
       <div className="flex flex-col gap-1 mb-6 relative z-10 text-xs font-medium">
         <div className="flex items-center gap-2 text-zinc-300">
           <Activity size={14} className="text-zinc-500" />
@@ -94,3 +116,16 @@ export default function FileCard({ file, onLoad, onDelete, onExport }) {
     </div>
   );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+UI representation of a single file in the library, complete with metadata and action buttons.
+
+React Concepts Used:
+- Local state for dropdown toggle (`menuOpen`).
+- Event bubbling prevention (`e.stopPropagation()`).
+*/

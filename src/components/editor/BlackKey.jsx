@@ -1,3 +1,16 @@
+/*
+PURPOSE:
+Renders a single Black Key on the virtual keyboard UI.
+
+REACT CONCEPT:
+Dumb/Presentational Component relying entirely on props.
+
+VIVA QUESTION:
+Why is `z-10` important here?
+
+VIVA ANSWER:
+Black keys physically sit "on top" of white keys. In CSS, the z-index controls the stacking order along the Z-axis. Giving the black key `z-10` ensures it renders above the white keys, which have default z-indexes.
+*/
 export default function BlackKey({ note, left, width, isActive, onMouseDown, onMouseUp }) {
   return (
     <div
@@ -15,3 +28,16 @@ export default function BlackKey({ note, left, width, isActive, onMouseDown, onM
     </div>
   );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+A simple UI component for a black piano key.
+
+React Concepts Used:
+- Props for styling (`left`, `width`, `isActive`) and event handling (`onMouseDown`, `onMouseUp`).
+- Conditional classNames for active/pressed styling.
+*/

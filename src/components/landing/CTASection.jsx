@@ -4,23 +4,39 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { useMidiParser } from "../../hooks/useMidiParser";
 
+/*
+PURPOSE:
+Call To Action (CTA) section displayed at the bottom of the landing page. It acts as a massive dropzone where users can drop files to immediately enter the app.
+
+REACT CONCEPT:
+Hooks integration (`useCallback`, `useNavigate`, `useDropzone`).
+*/
 export default function CTASection() {
     const navigate = useNavigate();
     const { parse } = useMidiParser();
 
+    /*
+    VIVA QUESTION:
+    Why use `useCallback` here?
+
+    VIVA ANSWER:
+    `onDrop` is passed as a dependency into the `useDropzone` hook. If we didn't wrap `onDrop` in `useCallback`, React would create a brand new function reference in memory every time `CTASection` re-renders. This would force `useDropzone` to unnecessarily re-run its internal side-effects. `useCallback` caches the function reference between renders.
+    */
     const onDrop = useCallback(async (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
             await parse(acceptedFiles[0]);
+            // Redirect user to the studio once parsed
             navigate("/studio");
         }
     }, [parse, navigate]);
 
+    // Setup drag-and-drop mechanics
     const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
         onDrop,
         accept: {
             'audio/midi': ['.mid', '.midi']
         },
-        noClick: true 
+        noClick: true // Disables clicking the entire section to open the file dialog
     });
 
     return (
@@ -44,6 +60,7 @@ export default function CTASection() {
                 </p>
 
                 <div className="flex flex-col items-center gap-6 relative z-10">
+                    {/* Explicit button to open the file dialog, since noClick is true on the container */}
                     <button 
                         onClick={open}
                         className="px-10 py-5 rounded-2xl text-white text-base font-bold transition-all hover:scale-[1.04] active:scale-[0.98] relative group overflow-hidden"
@@ -67,3 +84,22 @@ export default function CTASection() {
         </section>
     );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+The final call-to-action block on the landing page, doubling as a massive file dropzone to instantly start the app experience.
+
+React Concepts Used:
+- `useCallback` for referential equality optimization.
+- `useNavigate` for programmatic routing after an async action.
+
+Most Likely Viva Questions:
+1. Explain the difference between `useCallback` and `useMemo`.
+
+Expected Answers:
+1. Both hooks cache values between renders to improve performance. However, `useMemo` executes a function and caches its *result* (like an array or object), whereas `useCallback` caches the *function definition itself*. `useCallback(fn, deps)` is effectively syntactic sugar for `useMemo(() => fn, deps)`.
+*/

@@ -2,6 +2,13 @@
 import { Settings } from 'lucide-react';
 import { getTrackColor } from '../../utils/colors';
 
+/*
+PURPOSE:
+A UI component that displays all tracks parsed from the MIDI file, allowing the user to mute, solo, change volume, and change the color of each track independently.
+
+REACT CONCEPT:
+Component receiving state and dispatch functions as props (Lifting State Up / Prop Passing).
+*/
 export default function MixerPanel({
   tracks = [],
   mutedTracks,
@@ -21,8 +28,18 @@ export default function MixerPanel({
       <div className="space-y-4">
         {tracks.length > 0 ? tracks.map((track) => (
           <div key={track.id} className="bg-black/30 border border-white/5 rounded-xl p-4">
+            
+            {/* 
+            PURPOSE: Track Header (Color Picker and Name) 
+            */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
+                
+                {/* 
+                PURPOSE: Custom Color Picker UI 
+                VIVA QUESTION: How did you style the standard HTML `<input type="color">` which is notoriously difficult to style?
+                VIVA ANSWER: By wrapping it in a relatively positioned `div` with a border radius. I set the actual `<input>` to absolute positioning, scaled it up (`w-[200%] h-[200%]`) so it overflows the container, and set `opacity-0` so it's invisible but still clickable. Then, I placed a colored `div` underneath it (`pointer-events-none`) to act as the visual representation.
+                */}
                 <div className="relative w-5 h-5 rounded-full overflow-hidden border border-white/20 flex-shrink-0 cursor-pointer">
                   <input
                     type="color"
@@ -43,6 +60,9 @@ export default function MixerPanel({
               <span className="text-[10px] text-zinc-600 font-mono">{track.noteCount} notes</span>
             </div>
 
+            {/* 
+            PURPOSE: Mute and Solo Buttons 
+            */}
             <div className="flex gap-2">
               <button
                 onClick={() => toggleMute(track.id)}
@@ -66,6 +86,9 @@ export default function MixerPanel({
               </button>
             </div>
 
+            {/* 
+            PURPOSE: Volume Slider 
+            */}
             <div className="mt-3 flex items-center gap-2">
               <span className="text-[10px] font-bold text-zinc-500 uppercase">Vol</span>
               <input
@@ -86,3 +109,28 @@ export default function MixerPanel({
     </div>
   );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+A UI component rendering the track list and mixer controls (volume, mute, solo, color).
+
+Data Flow:
+User clicks Mute -> Calls `toggleMute(trackId)` prop -> Updates `useMixerStore` -> Audio Engine reads new store state and stops scheduling notes for that track.
+
+React Concepts Used:
+- Conditional rendering (`tracks.length > 0 ? ... : ...`).
+- List rendering (`tracks.map(...)`). Every item mapped from an array must have a unique `key` prop so React can efficiently update the DOM without re-rendering the whole list.
+
+JavaScript Concepts Used:
+- Destructuring assignment in component arguments.
+
+Most Likely Viva Questions:
+1. Why do you pass `toggleMute` as a prop instead of importing `useMixerStore` directly inside this component?
+
+Expected Answers:
+1. "Separation of Concerns" and testing. By passing the state and functions as props, `MixerPanel` becomes a "dumb" or "pure" component. It doesn't know where the data comes from. This makes it highly reusable (we could reuse this UI in another part of the app) and easier to test without needing to mock the Zustand store. The parent component handles the logic and passes it down.
+*/

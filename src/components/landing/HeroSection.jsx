@@ -4,13 +4,26 @@ import { useDropzone } from "react-dropzone";
 import { useMidiParser } from "../../hooks/useMidiParser";
 import { Music, MonitorPlay, Layers } from "lucide-react";
 
+/*
+PURPOSE:
+The top section of the landing page. It provides the initial pitch, animations, and the primary entry point (a dropzone for MIDI files).
+
+REACT CONCEPT:
+Combining state (`useState`), effects (`useEffect`), and third-party hooks (`useDropzone`).
+*/
 export default function HeroSection() {
     const navigate = useNavigate();
     const { parse } = useMidiParser();
     const [particles, setParticles] = useState([]);
 
+    /*
+    PURPOSE:
+    Generates random floating background particles.
+    
+    REACT CONCEPT:
+    `useEffect` with an empty dependency array `[]` ensures this generation only runs once when the component mounts.
+    */
     useEffect(() => {
-
         const generatedParticles = Array.from({ length: 30 }).map((_, i) => ({
             id: i,
             left: `${Math.random() * 100}%`,
@@ -39,6 +52,7 @@ export default function HeroSection() {
     return (
         <section className="pt-40 pb-20 px-6 max-w-7xl mx-auto text-center flex flex-col items-center relative overflow-hidden min-h-screen">
 
+            {/* Background effects */}
             <div 
                 className="absolute inset-0 z-0 animate-float-bg pointer-events-none"
                 style={{
@@ -61,6 +75,7 @@ export default function HeroSection() {
                 ))}
             </div>
 
+            {/* Floating Emojis */}
             <div className="absolute top-20 left-10 text-[120px] opacity-15 rotate-[-10deg] pointer-events-none z-0 select-none animate-[float_6s_ease-in-out_infinite]">🎹</div>
             <div className="absolute top-40 right-20 text-[150px] opacity-10 rotate-[15deg] pointer-events-none z-0 select-none animate-[float_8s_ease-in-out_infinite]">🎹</div>
             <div className="absolute bottom-40 left-1/4 text-[100px] opacity-20 rotate-[-20deg] pointer-events-none z-0 select-none animate-[float_7s_ease-in-out_infinite]">🎹</div>
@@ -82,6 +97,7 @@ export default function HeroSection() {
                 </button>
             </div>
 
+            {/* Drag and drop zone */}
             <div 
                 {...getRootProps()} 
                 className={`w-full max-w-2xl p-12 rounded-2xl cursor-pointer transition-all duration-300 relative z-10 group glass-panel
@@ -114,10 +130,9 @@ export default function HeroSection() {
                 </div>
             </div>
 
+            {/* Stylistic mini piano roll visual */}
             <div className="mt-8 mb-16 relative z-10 w-full max-w-2xl flex flex-col items-center opacity-90 select-none">
-
                 <div className="w-full h-48 bg-[var(--bg-secondary)] rounded-t-xl border border-[var(--border)] relative overflow-hidden backdrop-blur-sm">
-
                     <div className="absolute inset-0 flex w-full h-full pointer-events-none opacity-20">
                         {Array.from({ length: 14 }).map((_, i) => (
                             <div key={`grid-${i}`} className="flex-1 border-r border-[var(--border)] last:border-r-0" />
@@ -155,10 +170,8 @@ export default function HeroSection() {
 
                 <div className="w-full h-1 bg-zinc-800 border-t border-[var(--border)]" />
                 <div className="flex w-full h-14 bg-white rounded-b-xl overflow-hidden border border-[var(--border)] shadow-[0_20px_40px_rgba(0,0,0,0.1)] justify-between px-[2px]">
-
                     {Array.from({ length: 14 }).map((_, i) => (
                         <div key={i} className="relative flex-1 border-r border-zinc-200 last:border-r-0 bg-white h-full hover:bg-zinc-100 transition-colors">
-
                             {![2, 6, 9, 13].includes(i) && (
                                 <div className="absolute top-0 right-[-50%] w-[60%] h-[65%] bg-zinc-900 rounded-b-sm z-10 border border-black hover:bg-zinc-800 transition-colors shadow-sm" />
                             )}
@@ -180,3 +193,16 @@ export default function HeroSection() {
         </section>
     );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+Main landing page Hero section featuring animations and a drag-and-drop zone to start the core workflow.
+
+React Concepts Used:
+- `useEffect` for one-off setup (particle generation).
+- Functional CSS styling based on component state (`isDragActive`).
+*/

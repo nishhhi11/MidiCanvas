@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FolderUp, FileSearch, Edit3, PlayCircle } from "lucide-react";
 
+/*
+PURPOSE:
+An animated stepper on the landing page explaining the core user journey (Upload -> Parse -> Edit -> Play).
+
+REACT CONCEPT:
+Component state management paired with a timer-based effect.
+*/
 export default function HowItWorksSection() {
     const steps = [
         {
@@ -27,6 +34,13 @@ export default function HowItWorksSection() {
 
     const [activeStep, setActiveStep] = useState(0);
 
+    /*
+    VIVA QUESTION:
+    Why do you need to return `clearInterval(timer)` in the useEffect?
+
+    VIVA ANSWER:
+    `setInterval` registers a repeating task with the browser's event loop. If the user navigates away from the landing page, the component unmounts, but the interval will keep firing forever in the background, trying to update state on a non-existent component (a memory leak). Returning `clearInterval` acts as a cleanup function that React guarantees to run right before unmounting.
+    */
     useEffect(() => {
         const timer = setInterval(() => {
             setActiveStep((prev) => (prev + 1) % steps.length);
@@ -40,8 +54,10 @@ export default function HowItWorksSection() {
 
             <div className="relative max-w-5xl mx-auto">
 
+                {/* Background line for the progress bar */}
                 <div className="absolute top-12 left-[12%] right-[12%] h-1 bg-white/5 rounded-full hidden sm:block" />
 
+                {/* Animated progress bar fill */}
                 <div 
                     className="absolute top-12 left-[12%] h-1 bg-white transition-all duration-700 ease-out rounded-full hidden sm:block shadow-[0_0_15px_rgba(255,255,255,0.6)]" 
                     style={{ width: `${(activeStep / (steps.length - 1)) * 76}%` }}
@@ -65,11 +81,13 @@ export default function HowItWorksSection() {
                                 >
                                     <Icon size={40} className={`transition-colors duration-500 ${isActive ? 'text-white' : 'text-zinc-500'}`} strokeWidth={1.5} />
 
+                                    {/* Pulsing ring around the currently active step */}
                                     {isCurrent && (
                                         <div className="absolute inset-0 rounded-2xl border-2 border-white/50 animate-ping opacity-20" />
                                     )}
                                 </div>
 
+                                {/* Node dots on the progress line */}
                                 <div className="mb-6 hidden sm:flex items-center justify-center">
                                     <div className={`w-4 h-4 rounded-full transition-all duration-500 flex items-center justify-center
                                         ${isActive ? 'bg-white shadow-[0_0_15px_white]' : 'bg-[#111] border-2 border-zinc-700'}`} 
@@ -88,3 +106,16 @@ export default function HowItWorksSection() {
         </section>
     );
 }
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+Landing page stepper indicating the pipeline a MIDI file goes through.
+
+React Concepts Used:
+- Setting intervals inside `useEffect` with proper cleanup.
+- Computing dynamic CSS (progress bar width based on state).
+*/

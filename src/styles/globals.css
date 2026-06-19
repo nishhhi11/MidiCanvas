@@ -2,6 +2,17 @@
 @import "tw-animate-css";
 @import "@fontsource-variable/geist";
 
+/*
+PURPOSE:
+Defines global CSS variables for themes (light/dark mode), custom Tailwind animations, and glassmorphism styling utilities.
+
+VIVA QUESTION:
+Why define CSS variables here when you are using Tailwind?
+
+VIVA ANSWER:
+Tailwind is great for utility classes, but CSS variables allow for dynamic theme switching at runtime without having to swap out hundreds of utility classes. When the `dark` class is applied to a parent, all these CSS variables instantly update.
+*/
+
 @theme {
   --color-bg-primary: var(--bg-primary);
   --color-bg-secondary: var(--bg-secondary);

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from "framer-motion";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { parseMidi } from "../utils/midiParser";
 import { exportToMidi, generateMidiBinary } from "../utils/fileExporter";
 import { getTrackColor } from "../utils/colors";
@@ -14,11 +14,21 @@ import { usePlaybackStore } from "../stores/playbackStore";
 import { useLibraryStore } from "../stores/libraryStore";
 import { triggerCustomAttackRelease, getAudioContextTime } from "../utils/audioEngine";
 
+<<<<<<< HEAD
+=======
+/*
+PURPOSE:
+The central smart component for the MIDI Editor application. It aggregates all global states, handles file drops, orchestrates keyboard shortcuts, and renders the entire editor UI layout.
+
+REACT CONCEPT:
+Container/Smart Component pattern.
+*/
+>>>>>>> 521e0ef (update)
 export default function EditorPage() {
   const { handlePlay, handlePause, handleStop, handleSeek } = usePlaybackController();
-  const { setMidiData, setUploadedFile, uploadedFile, midiData, isParsing, setIsParsing, updateMidiMetadata } = useMidiStore();
+  const { setMidiData, setUploadedFile, uploadedFile, midiData, isParsing, setIsParsing, updateMidiMetadata, undo, redo, history } = useMidiStore();
   const { clearMixer, masterVolume, setMasterVolume, soloedTracks, mutedTracks, trackVolumes, toggleMute, toggleSolo, setTrackVolume, trackColors } = useMixerStore();
-  const { playbackState, isLooping, toggleLoop, playbackRate, setPlaybackRate, currentTime, loopStart, loopEnd, setLoopPoints } = usePlaybackStore();
+  const { playbackState, isLooping, toggleLoop, setIsLooping, playbackRate, setPlaybackRate, currentTime, loopStart, loopEnd, setLoopPoints } = usePlaybackStore();
   const { activeNotes: playbackActiveNotes } = usePlaybackStore();
   const { activeNotes: keyboardActiveNotes } = useKeyboardPiano();
   const { saveFile } = useLibraryStore();
@@ -38,7 +48,20 @@ export default function EditorPage() {
     return octave * 12 + notesArr.indexOf(name) + 12;
   };
 
+<<<<<<< HEAD
  
+=======
+  /*
+  PURPOSE:
+  Handles the Live MIDI recording feature.
+
+  VIVA QUESTION:
+  Why do you use `useRef` to store the `recordedNotes` instead of `useState`?
+
+  VIVA ANSWER:
+  When recording, new notes are added constantly as the user plays. If `recordedNotes` was a state variable, adding a single note would trigger a re-render of this massive `EditorPage` component, causing immense lag and disrupting the timing of the recording. `useRef` holds the array in memory without triggering re-renders, and we only push it to Zustand when they click "Stop Recording".
+  */
+>>>>>>> 521e0ef (update)
   const toggleRecord = async () => {
     if (isRecording) {
       setIsRecording(false);
@@ -57,6 +80,7 @@ export default function EditorPage() {
       });
       activeRecordingNotes.current.clear();
 
+<<<<<<< HEAD
       if (recordedNotes.current.length > 0) {
         const sortedNotes = [...recordedNotes.current].sort((a, b) => a.time - b.time);
         const trackDuration = Math.max(...sortedNotes.map(n => n.time + n.duration)) + 1;
@@ -88,6 +112,67 @@ export default function EditorPage() {
       recordingStartTime.current = performance.now();
       setIsRecording(true);
     }
+=======
+         activeRecordingNotes.current.forEach((startTime, note) => {
+             const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+             const relativeStart = Math.max(0, (startTime - recordingStartTime.current) / 1000);
+             recordedNotes.current.push({
+                 id: `rec-${recordedNotes.current.length}`,
+                 name: note,
+                 midi: noteToMidi(note),
+                 time: relativeStart,
+                 duration: duration,
+                 velocity: 0.8,
+                 track: 0
+             });
+         });
+         activeRecordingNotes.current.clear();
+
+         if (recordedNotes.current.length > 0) {
+             const sortedNotes = [...recordedNotes.current].sort((a, b) => a.time - b.time);
+             const trackDuration = Math.max(...sortedNotes.map(n => n.time + n.duration)) + 1;
+
+             const newMidiData = {
+                 name: `Recording ${new Date().toLocaleString()}`,
+                 tempo: 120,
+                 trackCount: 1,
+                 noteCount: sortedNotes.length,
+                 duration: trackDuration,
+                 timeSignature: "4/4",
+                 notes: sortedNotes,
+                 tracks: [{ id: 0, name: "Recorded Track", noteCount: sortedNotes.length }]
+             };
+
+             const { Midi } = await import('@tonejs/midi');
+             const newMidi = new Midi();
+             newMidi.header.setTempo(120);
+             const track = newMidi.addTrack();
+             track.name = "Recorded Track";
+             sortedNotes.forEach(note => {
+                 track.addNote({
+                     midi: note.midi,
+                     time: note.time,
+                     duration: note.duration,
+                     velocity: note.velocity
+                 });
+             });
+             const binary = newMidi.toArray();
+             if (binary) {
+                 await saveFile(newMidiData, binary);
+                 clearMixer();
+                 setMidiData(newMidiData);
+                 setUploadedFile(newMidiData.name);
+                 usePlaybackStore.getState().setLoopPoints(0, trackDuration);
+                 handleStop();
+             }
+         }
+     } else {
+         recordedNotes.current = [];
+         activeRecordingNotes.current.clear();
+         recordingStartTime.current = performance.now();
+         setIsRecording(true);
+     }
+>>>>>>> 521e0ef (update)
   };
 
   const KEY_MAP = {
@@ -95,6 +180,11 @@ export default function EditorPage() {
     ',': 'C4', 'l': 'C#4', '.': 'D4', ';': 'D#4', '/': 'E4', 'q': 'F4', '2': 'F#4', 'w': 'G4', '3': 'G#4', 'e': 'A4', '4': 'A#4', 'r': 'B4', 't': 'C5'
   };
 
+
+  /*
+  PURPOSE:
+  Global keyboard listener for typing-to-piano functionality.
+  */
   useEffect(() => {
     const handleKey = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -144,24 +234,41 @@ export default function EditorPage() {
   }, [isRecording]);
 
   const fileInputRef = useRef(null);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 521e0ef (update)
 
+  /*
+  PURPOSE:
+  Handles parsing a user-uploaded .mid file, clearing out old data, and dispatching to Zustand.
+  */
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     setUploadedFile(file.name);
     try {
       setIsParsing(true);
+<<<<<<< HEAD
 
       await new Promise(resolve => setTimeout(resolve, 50));
 
+=======
+      // Small delay to allow React to render the loading spinner before the main thread locks up parsing
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+>>>>>>> 521e0ef (update)
       const parsed = await parseMidi(file);
       setMidiData(parsed);
       clearMixer();
       usePlaybackStore.getState().setLoopPoints(0, parsed.duration);
       handleStop();
 
+<<<<<<< HEAD
       
+=======
+      // Automatically cache into IndexedDB Library
+>>>>>>> 521e0ef (update)
       const arrayBuffer = await file.arrayBuffer();
       const rawData = new Uint8Array(arrayBuffer);
       await saveFile(
@@ -176,6 +283,9 @@ export default function EditorPage() {
     }
   };
 
+  /*
+  PURPOSE: Drag and drop file support.
+  */
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
@@ -190,7 +300,14 @@ export default function EditorPage() {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+  /*
+  PURPOSE:
+  Global hotkeys for Undo/Redo and Play/Pause.
+  */
+>>>>>>> 521e0ef (update)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -230,7 +347,12 @@ export default function EditorPage() {
   const totalTime = midiData?.duration || 0;
 
   const mergedActiveNotes = [...playbackActiveNotes, ...keyboardActiveNotes];
+<<<<<<< HEAD
 
+=======
+  
+  // Applies Mute and Solo filters before passing notes down to the canvas
+>>>>>>> 521e0ef (update)
   const filteredNotes = midiData?.notes?.filter(n => {
     if (soloedTracks.size > 0) return soloedTracks.has(n.track);
     return !mutedTracks.has(n.track);
@@ -418,10 +540,34 @@ export default function EditorPage() {
             <div className="text-xs font-bold text-[#888888] uppercase tracking-wide">
               🎼 Piano Roll Editor
             </div>
+<<<<<<< HEAD
             <div className="flex gap-2">
               <select
                 value={snap}
                 onChange={(e) => setSnap(e.target.value)}
+=======
+            <div className="flex gap-2 items-center">
+              <button 
+                onClick={undo}
+                disabled={history.past.length === 0}
+                className={`px-2 py-2 rounded-md text-xs font-bold transition-all ${history.past.length > 0 ? 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#FFFFF0]' : 'bg-[#1a1a1a]/50 text-[#888888] cursor-not-allowed'}`}
+                title="Undo (⌘Z)"
+              >
+                ↶ UNDO
+              </button>
+              <button 
+                onClick={redo}
+                disabled={history.future.length === 0}
+                className={`px-2 py-2 rounded-md text-xs font-bold transition-all ${history.future.length > 0 ? 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#FFFFF0]' : 'bg-[#1a1a1a]/50 text-[#888888] cursor-not-allowed'}`}
+                title="Redo (⇧⌘Z)"
+              >
+                ↷ REDO
+              </button>
+              <div className="w-px h-6 bg-[#2a2a2a] mx-1"></div>
+              <select 
+                value={snap} 
+                onChange={(e) => setSnap(e.target.value)} 
+>>>>>>> 521e0ef (update)
                 className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-md px-2 py-2.5 text-sm text-[#FFFFF0]"
               >
                 <option>1/4</option>
@@ -484,6 +630,7 @@ export default function EditorPage() {
       <div className="flex-shrink-0 border-t border-[#2a2a2a] bg-black p-4 w-full flex justify-center">
         <div className="w-full max-w-6xl relative h-32 select-none">
 
+          {/* Interactive Bottom Keyboard Component */}
           <div className="flex w-full h-full">
             {virtualPianoKeys.filter(k => ![1, 3, 6, 8, 10].includes(virtualPianoKeys.indexOf(k) % 12)).map((note, idx) => {
               const isActive = activePlayKeys.has(note);
@@ -691,17 +838,43 @@ export default function EditorPage() {
                 </div>
               </div>
               <div className="flex gap-1">
+<<<<<<< HEAD
                 <button
                   onClick={() => setLoopPoints(currentTime, loopEnd)}
+=======
+                <button 
+                  onClick={() => {
+                    setLoopPoints(currentTime, loopEnd);
+                    if (!isLooping) setIsLooping(true);
+                  }} 
+>>>>>>> 521e0ef (update)
                   className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟳ Set Start
                 </button>
+<<<<<<< HEAD
                 <button
                   onClick={() => setLoopPoints(loopStart, currentTime)}
+=======
+                <button 
+                  onClick={() => {
+                    setLoopPoints(loopStart, currentTime);
+                    if (!isLooping) setIsLooping(true);
+                  }} 
+>>>>>>> 521e0ef (update)
                   className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟲ Set End
+                </button>
+                <button 
+                  onClick={() => {
+                    setLoopPoints(0, totalTime);
+                    setIsLooping(false);
+                  }} 
+                  className="px-2 py-1 bg-[#1a1a1a] rounded text-sm text-red-400 hover:bg-[#2a2a2a]"
+                  title="Reset Loop"
+                >
+                  ✕
                 </button>
               </div>
               <div className="flex gap-2">
@@ -773,3 +946,42 @@ export default function EditorPage() {
     </motion.div>
   );
 };
+<<<<<<< HEAD
+=======
+
+/*
+========================================
+FILE SUMMARY
+========================================
+
+Purpose:
+This is the root container for the entire Editor view. It ties together the Zustand stores, the Piano Roll UI, the MIDI Parser, the Audio Engine, and the UI tools (Mixer, Transport, Interactive Keyboard).
+
+Data Flow:
+User drops file -> `handleFileUpload` -> `parseMidi` Web Worker -> `setMidiData` -> React re-renders components -> Piano Roll draws notes.
+
+Important Variables:
+- `filteredNotes`: Filters out notes belonging to muted tracks before passing them down to the canvas.
+- `recordedNotes`: A `useRef` array collecting notes created by the user while the Record button is active.
+
+Important Functions:
+- `toggleRecord`: Manages a mini-engine that captures physical key presses, calculates their timing via `performance.now()`, and pushes them into the global store as a brand new MIDI file.
+- `handleFileUpload`: Acts as the gateway between the filesystem and the application state.
+
+React Concepts Used:
+- Container Pattern (assembling smaller components).
+- Multiple `useEffect` hooks for global event listeners (Spacebar for Play/Pause, Ctrl+Z for Undo).
+
+Browser APIs Used:
+- `e.dataTransfer.files` for Drag-and-Drop functionality.
+- `performance.now()` for sub-millisecond precision during live recording.
+
+Most Likely Viva Questions:
+1. Explain how the live recording feature works.
+2. How do you handle file drag-and-drop?
+
+Expected Answers:
+1. When recording starts, we save the current `performance.now()` timestamp. Whenever a user presses a key, we log the key and another timestamp. On key release, we calculate the duration by subtracting the release time from the press time. We create a JSON note object and push it to a `useRef` array. When recording stops, we bundle the array into a new MIDI file object and save it to the Zustand store.
+2. We attach `onDragOver` and `onDrop` event handlers to the outermost `div`. `e.preventDefault()` prevents the browser from trying to open the file in a new tab. We grab the file from `e.dataTransfer.files[0]` and pass it to our existing `handleFileUpload` function.
+*/
+>>>>>>> 521e0ef (update)
