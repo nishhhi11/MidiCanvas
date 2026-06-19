@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useMidiParser } from "../../hooks/useMidiParser";
-import { Music, Activity, MonitorPlay, Layers } from "lucide-react";
+import { Music, MonitorPlay, Layers } from "lucide-react";
 
 export default function HeroSection() {
     const navigate = useNavigate();
