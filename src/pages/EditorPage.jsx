@@ -8,7 +8,6 @@ import { usePlaybackController } from "../hooks/usePlayback";
 import { useKeyboardPiano } from "../hooks/useKeyboardPiano";
 import StudioPianoRoll from "../components/editor/PianoRollCanvas";
 import { ErrorBoundary } from "../components/common/ErrorBoundary";
-
 import { useMidiStore } from "../stores/midiStore";
 import { useMixerStore } from "../stores/useMixerStore";
 import { usePlaybackStore } from "../stores/playbackStore";
@@ -16,7 +15,6 @@ import { useLibraryStore } from "../stores/libraryStore";
 import { triggerCustomAttackRelease, getAudioContextTime } from "../utils/audioEngine";
 
 export default function EditorPage() {
-
   const { handlePlay, handlePause, handleStop, handleSeek } = usePlaybackController();
   const { setMidiData, setUploadedFile, uploadedFile, midiData, isParsing, setIsParsing, updateMidiMetadata } = useMidiStore();
   const { clearMixer, masterVolume, setMasterVolume, soloedTracks, mutedTracks, trackVolumes, toggleMute, toggleSolo, setTrackVolume, trackColors } = useMixerStore();
@@ -24,71 +22,72 @@ export default function EditorPage() {
   const { activeNotes: playbackActiveNotes } = usePlaybackStore();
   const { activeNotes: keyboardActiveNotes } = useKeyboardPiano();
   const { saveFile } = useLibraryStore();
-
   const [snap, setSnap] = useState('1/16');
   const [highlightKeys, setHighlightKeys] = useState(true);
   const [showNoteNames, setShowNoteNames] = useState(true);
-
   const [activePlayKeys, setActivePlayKeys] = useState(new Set());
-
   const [isRecording, setIsRecording] = useState(false);
   const recordingStartTime = useRef(0);
   const recordedNotes = useRef([]);
   const activeRecordingNotes = useRef(new Map());
 
   const noteToMidi = (note) => {
-     const notesArr = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-     const octave = parseInt(note.slice(-1));
-     const name = note.slice(0, -1);
-     return octave * 12 + notesArr.indexOf(name) + 12; 
+    const notesArr = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const octave = parseInt(note.slice(-1));
+    const name = note.slice(0, -1);
+    return octave * 12 + notesArr.indexOf(name) + 12;
   };
 
+ 
   const toggleRecord = async () => {
-     if (isRecording) {
-         setIsRecording(false);
+    if (isRecording) {
+      setIsRecording(false);
+      activeRecordingNotes.current.forEach((startTime, note) => {
+        const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+        const relativeStart = Math.max(0, (startTime - recordingStartTime.current) / 1000);
+        recordedNotes.current.push({
+          id: `rec-${recordedNotes.current.length}`,
+          name: note,
+          midi: noteToMidi(note),
+          time: relativeStart,
+          duration: duration,
+          velocity: 0.8,
+          track: 0
+        });
+      });
+      activeRecordingNotes.current.clear();
 
-         activeRecordingNotes.current.forEach((startTime, note) => {
-             const duration = (performance.now() - startTime) / 1000;
-             const relativeStart = (startTime - recordingStartTime.current) / 1000;
-             recordedNotes.current.push({
-                 id: `rec-${recordedNotes.current.length}`,
-                 name: note,
-                 midi: noteToMidi(note),
-                 time: relativeStart,
-                 duration: duration,
-                 velocity: 0.8,
-                 track: 0
-             });
-         });
-         activeRecordingNotes.current.clear();
+      if (recordedNotes.current.length > 0) {
+        const sortedNotes = [...recordedNotes.current].sort((a, b) => a.time - b.time);
+        const trackDuration = Math.max(...sortedNotes.map(n => n.time + n.duration)) + 1;
 
-         if (recordedNotes.current.length > 0) {
-             const lastNote = recordedNotes.current[recordedNotes.current.length - 1];
-             const trackDuration = lastNote.time + lastNote.duration + 1;
+        const newMidiData = {
+          name: `Recording ${new Date().toLocaleString()}`,
+          tempo: 120,
+          trackCount: 1,
+          noteCount: sortedNotes.length,
+          duration: trackDuration,
+          timeSignature: "4/4",
+          notes: sortedNotes,
+          tracks: [{ id: 0, name: "Recorded Track", noteCount: sortedNotes.length }]
+        };
 
-             const newMidiData = {
-                 name: `Recording ${new Date().toLocaleString()}`,
-                 tempo: 120,
-                 trackCount: 1,
-                 noteCount: recordedNotes.current.length,
-                 duration: trackDuration,
-                 timeSignature: "4/4",
-                 notes: [...recordedNotes.current],
-                 tracks: [{ id: 0, name: "Recorded Track", noteCount: recordedNotes.current.length }]
-             };
-
-             const binary = generateMidiBinary(newMidiData);
-             if (binary) {
-                 await saveFile(newMidiData, binary);
-                 setMidiData(newMidiData);
-             }
-         }
-     } else {
-         recordedNotes.current = [];
-         activeRecordingNotes.current.clear();
-         recordingStartTime.current = performance.now();
-         setIsRecording(true);
-     }
+        const binary = generateMidiBinary(newMidiData);
+        if (binary) {
+          await saveFile(newMidiData, binary);
+          clearMixer();
+          setMidiData(newMidiData);
+          setUploadedFile(newMidiData.name);
+          usePlaybackStore.getState().setLoopPoints(0, trackDuration);
+          handleStop();
+        }
+      }
+    } else {
+      recordedNotes.current = [];
+      activeRecordingNotes.current.clear();
+      recordingStartTime.current = performance.now();
+      setIsRecording(true);
+    }
   };
 
   const KEY_MAP = {
@@ -105,34 +104,34 @@ export default function EditorPage() {
       const note = KEY_MAP[e.key.toLowerCase()];
       if (note) {
         if (e.type === 'keydown') {
-           if (!activePlayKeys.has(note)) {
-               setActivePlayKeys(prev => new Set(prev).add(note));
-               triggerCustomAttackRelease(note, 0.3, getAudioContextTime(), 0.8);
-               if (isRecording) {
-                   activeRecordingNotes.current.set(note, performance.now());
-               }
-           }
+          if (!activePlayKeys.has(note)) {
+            setActivePlayKeys(prev => new Set(prev).add(note));
+            triggerCustomAttackRelease(note, 0.3, getAudioContextTime(), 0.8);
+            if (isRecording) {
+              activeRecordingNotes.current.set(note, performance.now());
+            }
+          }
         } else if (e.type === 'keyup') {
-           setActivePlayKeys(prev => {
-             const next = new Set(prev);
-             next.delete(note);
-             return next;
-           });
-           if (isRecording && activeRecordingNotes.current.has(note)) {
-               const startTime = activeRecordingNotes.current.get(note);
-               const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
-               const relativeStart = (startTime - recordingStartTime.current) / 1000;
-               recordedNotes.current.push({
-                   id: `rec-${recordedNotes.current.length}`,
-                   name: note,
-                   midi: noteToMidi(note),
-                   time: relativeStart,
-                   duration: duration,
-                   velocity: 0.8,
-                   track: 0
-               });
-               activeRecordingNotes.current.delete(note);
-           }
+          setActivePlayKeys(prev => {
+            const next = new Set(prev);
+            next.delete(note);
+            return next;
+          });
+          if (isRecording && activeRecordingNotes.current.has(note)) {
+            const startTime = activeRecordingNotes.current.get(note);
+            const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+            const relativeStart = (startTime - recordingStartTime.current) / 1000;
+            recordedNotes.current.push({
+              id: `rec-${recordedNotes.current.length}`,
+              name: note,
+              midi: noteToMidi(note),
+              time: relativeStart,
+              duration: duration,
+              velocity: 0.8,
+              track: 0
+            });
+            activeRecordingNotes.current.delete(note);
+          }
         }
       }
     };
@@ -144,7 +143,8 @@ export default function EditorPage() {
     }
   }, [isRecording]);
 
-    const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+
 
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
@@ -152,13 +152,16 @@ export default function EditorPage() {
     setUploadedFile(file.name);
     try {
       setIsParsing(true);
+
       await new Promise(resolve => setTimeout(resolve, 50));
+
       const parsed = await parseMidi(file);
       setMidiData(parsed);
       clearMixer();
       usePlaybackStore.getState().setLoopPoints(0, parsed.duration);
       handleStop();
 
+      
       const arrayBuffer = await file.arrayBuffer();
       const rawData = new Uint8Array(arrayBuffer);
       await saveFile(
@@ -173,6 +176,9 @@ export default function EditorPage() {
     }
   };
 
+  /*
+  PURPOSE: Drag and drop file support.
+  */
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
@@ -186,6 +192,7 @@ export default function EditorPage() {
       await handleFileUpload(syntheticEvent);
     }
   };
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -226,6 +233,7 @@ export default function EditorPage() {
   const totalTime = midiData?.duration || 0;
 
   const mergedActiveNotes = [...playbackActiveNotes, ...keyboardActiveNotes];
+
   const filteredNotes = midiData?.notes?.filter(n => {
     if (soloedTracks.size > 0) return soloedTracks.has(n.track);
     return !mutedTracks.has(n.track);
@@ -235,7 +243,7 @@ export default function EditorPage() {
   const activeVoicesCount = mergedActiveNotes.length;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -253,14 +261,13 @@ export default function EditorPage() {
             <div className="h-4 w-px bg-[#2a2a2a]" />
             <div className="flex gap-1">
               {['EDITOR', 'LIBRARY', 'BROWSER'].map(tab => (
-                <Link 
-                  key={tab} 
+                <Link
+                  key={tab}
                   to={tab === 'EDITOR' ? '/studio' : tab === 'LIBRARY' ? '/library' : '/'}
-                  className={`px-3 py-1 rounded-md text-[10px] text-sm font-medium transition-all ${
-                    tab === 'EDITOR' 
-                      ? 'bg-[#2a2a2a] text-[#FFFFF0]' 
+                  className={`px-3 py-1 rounded-md text-[10px] text-sm font-medium transition-all ${tab === 'EDITOR'
+                      ? 'bg-[#2a2a2a] text-[#FFFFF0]'
                       : 'text-[#888888] hover:text-[#FFFFF0] hover:bg-[#1a1a1a]'
-                  }`}
+                    }`}
                 >
                   {tab}
                 </Link>
@@ -272,7 +279,7 @@ export default function EditorPage() {
             <span className="text-xs text-[#888888] bg-[#1a1a1a] px-2 py-2 rounded">
               📁 {uploadedFile || 'No file loaded'}
             </span>
-            <button 
+            <button
               onClick={async () => {
                 if (!midiData) return;
                 try {
@@ -293,7 +300,7 @@ export default function EditorPage() {
             >
               💾 SAVE
             </button>
-            <button 
+            <button
               onClick={() => exportToMidi(midiData)}
               className="px-3 py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] rounded-md text-sm transition-all text-[#FFFFF0]"
             >
@@ -309,37 +316,36 @@ export default function EditorPage() {
           <div className="text-xs font-bold text-[#888888] mb-1 uppercase tracking-wide">Transport</div>
 
           <div className="flex justify-center gap-2 mb-1">
-            <button 
+            <button
               onClick={toggleRecord}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                isRecording 
-                  ? 'bg-red-600 text-white shadow-[0_0_15px_#dc2626] animate-pulse' 
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isRecording
+                  ? 'bg-red-600 text-white shadow-[0_0_15px_#dc2626] animate-pulse'
                   : 'bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#FFFFF0]'
-              }`}
+                }`}
               title="Record"
             >
               <div className={`w-3 h-3 rounded-full ${isRecording ? 'bg-white' : 'bg-red-500'}`} />
             </button>
-            <button 
+            <button
               onClick={() => handleSeek(0)}
               className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Rewind to Start"
             >
               ⏪
             </button>
-            <button 
+            <button
               onClick={() => isPlaying ? handlePause() : handlePlay()}
               className="w-8 h-8 rounded-full text-base bg-[#2a2a2a] hover:bg-[#3a3a3a] flex items-center justify-center text-sm text-[#FFFFF0]"
             >
               {isPlaying ? '⏸' : '▶'}
             </button>
-            <button 
+            <button
               onClick={() => handleStop()}
               className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
             >
               ⏹️
             </button>
-            <button 
+            <button
               onClick={() => handleSeek(Math.min(totalTime, currentTime + 5))}
               className="w-10 h-10 rounded-full text-sm bg-[#1a1a1a] hover:bg-[#2a2a2a] text-sm text-[#FFFFF0]"
               title="Fast Forward"
@@ -348,13 +354,12 @@ export default function EditorPage() {
             </button>
           </div>
 
-          <button 
+          <button
             onClick={toggleLoop}
-            className={`text-sm py-1 rounded-md text-[10px] mb-1 transition-all ${
-              isLooping 
-                ? 'bg-[#2a2a2a] text-[#D4C5A9] border border-[#D4C5A9]/30' 
+            className={`text-sm py-1 rounded-md text-[10px] mb-1 transition-all ${isLooping
+                ? 'bg-[#2a2a2a] text-[#D4C5A9] border border-[#D4C5A9]/30'
                 : 'bg-[#1a1a1a] text-[#888888] hover:bg-[#2a2a2a]'
-            }`}
+              }`}
           >
             🔁 {isLooping ? 'LOOP ACTIVE' : 'LOOP'}
           </button>
@@ -370,22 +375,22 @@ export default function EditorPage() {
                 <span className="text-[#D4C5A9]">{tempo} BPM</span>
               </div>
               <div className="flex gap-1">
-                <button 
-                  onClick={() => updateMidiMetadata({ tempo: Math.max(40, tempo - 5) })} 
+                <button
+                  onClick={() => updateMidiMetadata({ tempo: Math.max(40, tempo - 5) })}
                   className="w-7 h-7 rounded text-[10px] bg-[#1a1a1a] text-[#FFFFF0] text-sm hover:bg-[#2a2a2a]"
                 >
                   −
                 </button>
-                <input 
-                  type="range" 
-                  min="40" 
-                  max="240" 
-                  value={tempo} 
-                  onChange={(e) => updateMidiMetadata({ tempo: parseInt(e.target.value) })} 
-                  className="flex-1 h-1 bg-[#2a2a2a] rounded-lg accent-[#D4C5A9]" 
+                <input
+                  type="range"
+                  min="40"
+                  max="240"
+                  value={tempo}
+                  onChange={(e) => updateMidiMetadata({ tempo: parseInt(e.target.value) })}
+                  className="flex-1 h-1 bg-[#2a2a2a] rounded-lg accent-[#D4C5A9]"
                 />
-                <button 
-                  onClick={() => updateMidiMetadata({ tempo: Math.min(240, tempo + 5) })} 
+                <button
+                  onClick={() => updateMidiMetadata({ tempo: Math.min(240, tempo + 5) })}
                   className="w-7 h-7 rounded text-[10px] bg-[#1a1a1a] text-[#FFFFF0] text-sm hover:bg-[#2a2a2a]"
                 >
                   +
@@ -398,14 +403,14 @@ export default function EditorPage() {
                 <span>🔊 VOLUME</span>
                 <span className="text-[#D4C5A9]">{Math.round(masterVolume * 100)}%</span>
               </div>
-              <input 
-                type="range" 
-                min="0" 
-                max="1" 
+              <input
+                type="range"
+                min="0"
+                max="1"
                 step="0.01"
-                value={masterVolume} 
-                onChange={(e) => setMasterVolume(parseFloat(e.target.value))} 
-                className="w-full h-1 bg-[#2a2a2a] rounded-lg accent-[#D4C5A9]" 
+                value={masterVolume}
+                onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
+                className="w-full h-1 bg-[#2a2a2a] rounded-lg accent-[#D4C5A9]"
               />
             </div>
           </div>
@@ -417,9 +422,9 @@ export default function EditorPage() {
               🎼 Piano Roll Editor
             </div>
             <div className="flex gap-2">
-              <select 
-                value={snap} 
-                onChange={(e) => setSnap(e.target.value)} 
+              <select
+                value={snap}
+                onChange={(e) => setSnap(e.target.value)}
                 className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-md px-2 py-2.5 text-sm text-[#FFFFF0]"
               >
                 <option>1/4</option>
@@ -428,12 +433,12 @@ export default function EditorPage() {
                 <option>Triplet</option>
               </select>
               <label className="cursor-pointer">
-                <input 
-                  type="file" 
-                  accept=".mid,.midi" 
-                  onChange={handleFileUpload} 
+                <input
+                  type="file"
+                  accept=".mid,.midi"
+                  onChange={handleFileUpload}
                   ref={fileInputRef}
-                  className="hidden" 
+                  className="hidden"
                 />
                 <span className="text-sm bg-[#1a1a1a] px-2 py-2.5 rounded-md text-[#888888] hover:text-[#FFFFF0] cursor-pointer">
                   + Replace MIDI
@@ -459,7 +464,7 @@ export default function EditorPage() {
               </div>
             ) : (
               <ErrorBoundary fallback={<div className="text-[#888888] p-4">Error loading piano roll.</div>}>
-                <StudioPianoRoll 
+                <StudioPianoRoll
                   rawNotes={filteredNotes}
                   duration={totalTime}
                   onSeek={handleSeek}
@@ -471,8 +476,8 @@ export default function EditorPage() {
             )}
             {isParsing && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20 rounded-xl">
-                 <div className="w-8 h-8 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin mb-1" />
-                 <span className="text-[#888888] text-sm">Parsing MIDI...</span>
+                <div className="w-8 h-8 border-2 border-gray-500/20 border-t-gray-400 rounded-full animate-spin mb-1" />
+                <span className="text-[#888888] text-sm">Parsing MIDI...</span>
               </div>
             )}
           </div>
@@ -487,7 +492,7 @@ export default function EditorPage() {
               const isActive = activePlayKeys.has(note);
               const mappedKey = Object.keys(KEY_MAP).find(k => KEY_MAP[k] === note)?.toUpperCase() || '';
               return (
-                <div 
+                <div
                   key={note}
                   onPointerDown={() => {
                     setActivePlayKeys(prev => new Set(prev).add(note));
@@ -497,30 +502,29 @@ export default function EditorPage() {
                   onPointerUp={() => {
                     setActivePlayKeys(prev => { const n = new Set(prev); n.delete(note); return n; });
                     if (isRecording && activeRecordingNotes.current.has(note)) {
-                        const startTime = activeRecordingNotes.current.get(note);
-                        const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
-                        const relativeStart = (startTime - recordingStartTime.current) / 1000;
-                        recordedNotes.current.push({
-                            id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
-                        });
-                        activeRecordingNotes.current.delete(note);
+                      const startTime = activeRecordingNotes.current.get(note);
+                      const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+                      const relativeStart = (startTime - recordingStartTime.current) / 1000;
+                      recordedNotes.current.push({
+                        id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
+                      });
+                      activeRecordingNotes.current.delete(note);
                     }
                   }}
                   onPointerLeave={() => {
                     setActivePlayKeys(prev => { const n = new Set(prev); n.delete(note); return n; });
                     if (isRecording && activeRecordingNotes.current.has(note)) {
-                        const startTime = activeRecordingNotes.current.get(note);
-                        const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
-                        const relativeStart = (startTime - recordingStartTime.current) / 1000;
-                        recordedNotes.current.push({
-                            id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
-                        });
-                        activeRecordingNotes.current.delete(note);
+                      const startTime = activeRecordingNotes.current.get(note);
+                      const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+                      const relativeStart = (startTime - recordingStartTime.current) / 1000;
+                      recordedNotes.current.push({
+                        id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
+                      });
+                      activeRecordingNotes.current.delete(note);
                     }
                   }}
-                  className={`flex-1 border-x border-[#222] rounded-b-md flex flex-col items-center justify-end pb-2 cursor-pointer transition-colors ${
-                    isActive ? 'bg-[#D4C5A9] text-black shadow-[0_0_15px_#D4C5A9]' : 'bg-[#FFFFF0] text-gray-500 hover:bg-[#e0e0e0]'
-                  }`}
+                  className={`flex-1 border-x border-[#222] rounded-b-md flex flex-col items-center justify-end pb-2 cursor-pointer transition-colors ${isActive ? 'bg-[#D4C5A9] text-black shadow-[0_0_15px_#D4C5A9]' : 'bg-[#FFFFF0] text-gray-500 hover:bg-[#e0e0e0]'
+                    }`}
                   style={{ zIndex: 1 }}
                 >
                   {showNoteNames && <span className="text-[10px] font-bold pointer-events-none mb-1">{note}</span>}
@@ -536,15 +540,15 @@ export default function EditorPage() {
               if (!isBlackKey) return null;
 
               const whiteKeyIdx = virtualPianoKeys.slice(0, globalIdx).filter(k => !k.includes('#')).length;
-              const totalWhiteKeys = 15; 
+              const totalWhiteKeys = 15;
               const leftPercent = (whiteKeyIdx / totalWhiteKeys) * 100;
-              const widthPercent = (1 / totalWhiteKeys) * 60; 
+              const widthPercent = (1 / totalWhiteKeys) * 60;
 
               const isActive = activePlayKeys.has(note);
               const mappedKey = Object.keys(KEY_MAP).find(k => KEY_MAP[k] === note)?.toUpperCase() || '';
 
               return (
-                <div 
+                <div
                   key={note}
                   onPointerDown={(e) => {
                     e.stopPropagation();
@@ -556,36 +560,35 @@ export default function EditorPage() {
                     e.stopPropagation();
                     setActivePlayKeys(prev => { const n = new Set(prev); n.delete(note); return n; });
                     if (isRecording && activeRecordingNotes.current.has(note)) {
-                        const startTime = activeRecordingNotes.current.get(note);
-                        const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
-                        const relativeStart = (startTime - recordingStartTime.current) / 1000;
-                        recordedNotes.current.push({
-                            id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
-                        });
-                        activeRecordingNotes.current.delete(note);
+                      const startTime = activeRecordingNotes.current.get(note);
+                      const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+                      const relativeStart = (startTime - recordingStartTime.current) / 1000;
+                      recordedNotes.current.push({
+                        id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
+                      });
+                      activeRecordingNotes.current.delete(note);
                     }
                   }}
                   onPointerLeave={(e) => {
                     e.stopPropagation();
                     setActivePlayKeys(prev => { const n = new Set(prev); n.delete(note); return n; });
                     if (isRecording && activeRecordingNotes.current.has(note)) {
-                        const startTime = activeRecordingNotes.current.get(note);
-                        const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
-                        const relativeStart = (startTime - recordingStartTime.current) / 1000;
-                        recordedNotes.current.push({
-                            id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
-                        });
-                        activeRecordingNotes.current.delete(note);
+                      const startTime = activeRecordingNotes.current.get(note);
+                      const duration = Math.max(0.1, (performance.now() - startTime) / 1000);
+                      const relativeStart = (startTime - recordingStartTime.current) / 1000;
+                      recordedNotes.current.push({
+                        id: `rec-${recordedNotes.current.length}`, name: note, midi: noteToMidi(note), time: relativeStart, duration: duration, velocity: 0.8, track: 0
+                      });
+                      activeRecordingNotes.current.delete(note);
                     }
                   }}
-                  className={`absolute rounded-b-md flex flex-col items-center justify-end pb-2 cursor-pointer pointer-events-auto transition-colors ${
-                    isActive ? 'bg-[#D4C5A9] text-black shadow-[0_0_15px_#D4C5A9]' : 'bg-[#1a1a1a] border border-[#333] border-t-0 text-gray-400 hover:bg-[#2a2a2a]'
-                  }`}
-                  style={{ 
-                    left: `calc(${leftPercent}% - ${widthPercent / 2}%)`, 
-                    width: `${widthPercent}%`, 
-                    height: '100%', 
-                    zIndex: 10 
+                  className={`absolute rounded-b-md flex flex-col items-center justify-end pb-2 cursor-pointer pointer-events-auto transition-colors ${isActive ? 'bg-[#D4C5A9] text-black shadow-[0_0_15px_#D4C5A9]' : 'bg-[#1a1a1a] border border-[#333] border-t-0 text-gray-400 hover:bg-[#2a2a2a]'
+                    }`}
+                  style={{
+                    left: `calc(${leftPercent}% - ${widthPercent / 2}%)`,
+                    width: `${widthPercent}%`,
+                    height: '100%',
+                    zIndex: 10
                   }}
                 >
                   {showNoteNames && <span className="text-[10px] font-bold pointer-events-none mb-1">{note.replace('#', '♯')}</span>}
@@ -606,21 +609,21 @@ export default function EditorPage() {
             </div>
             <div className="space-y-1 max-h-24 overflow-y-auto custom-scrollbar">
               {!hasMIDILoaded ? (
-                 <div className="text-sm text-[#555555] italic">No tracks loaded</div>
+                <div className="text-sm text-[#555555] italic">No tracks loaded</div>
               ) : (
-                 midiData?.tracks?.map((track, idx) => {
-                   const color = trackColors[track.id] || getTrackColor(track.id);
-                   const isMuted = mutedTracks.has(track.id);
-                   const isSoloed = soloedTracks.has(track.id);
-                   return (
+                midiData?.tracks?.map((track, idx) => {
+                  const color = trackColors[track.id] || getTrackColor(track.id);
+                  const isMuted = mutedTracks.has(track.id);
+                  const isSoloed = soloedTracks.has(track.id);
+                  return (
                     <div key={track.id || idx} className="flex flex-col mb-1">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-1">
 
                           <div className="relative w-3 h-3 rounded-full overflow-hidden shrink-0 cursor-pointer shadow-[0_0_5px_rgba(0,0,0,0.5)] border border-white/20 hover:scale-110 transition-transform">
-                            <input 
-                              type="color" 
-                              value={color} 
+                            <input
+                              type="color"
+                              value={color}
                               onChange={(e) => setTrackColor(track.id, e.target.value)}
                               className="absolute -inset-2 w-8 h-8 cursor-pointer"
                             />
@@ -629,13 +632,13 @@ export default function EditorPage() {
                           <span className="text-[#FFFFF0] truncate max-w-[60px]">{track.name || `Track ${track.id + 1}`}</span>
                         </div>
                         <div className="flex gap-1">
-                          <button 
+                          <button
                             onClick={() => toggleMute(track.id)}
                             className={`w-7 h-7 rounded text-[10px] text-sm ${isMuted ? 'bg-red-900/50 text-red-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
                           >
                             M
                           </button>
-                          <button 
+                          <button
                             onClick={() => toggleSolo(track.id)}
                             className={`w-7 h-7 rounded text-[10px] text-sm ${isSoloed ? 'bg-yellow-900/50 text-yellow-400' : 'bg-[#1a1a1a] text-[#888888] hover:text-[#FFFFF0]'}`}
                           >
@@ -645,19 +648,19 @@ export default function EditorPage() {
                       </div>
                       <div className="flex items-center gap-2 mt-1 px-1">
                         <span className="text-[9px] text-[#888888] w-6">VOL</span>
-                        <input 
-                          type="range" 
-                          min="0" 
-                          max="1" 
-                          step="0.01" 
-                          value={trackVolumes[track.id] !== undefined ? trackVolumes[track.id] : 1.0} 
-                          onChange={(e) => setTrackVolume(track.id, parseFloat(e.target.value))} 
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.01"
+                          value={trackVolumes[track.id] !== undefined ? trackVolumes[track.id] : 1.0}
+                          onChange={(e) => setTrackVolume(track.id, parseFloat(e.target.value))}
                           className="flex-1 h-0.5 bg-[#1a1a1a] rounded-lg appearance-none cursor-pointer accent-[#D4C5A9]"
                         />
                       </div>
                     </div>
-                   )
-                 })
+                  )
+                })
               )}
             </div>
             <div className="border-t border-[#2a2a2a] pt-1 mt-1">
@@ -677,14 +680,13 @@ export default function EditorPage() {
                 <div className="text-xs text-[#888888] mb-0.5">Speed</div>
                 <div className="flex gap-1">
                   {[0.5, 0.75, 1.0, 1.25].map(speed => (
-                    <button 
-                      key={speed} 
-                      onClick={() => setPlaybackRate(speed)} 
-                      className={`flex-1 py-2.5 rounded text-sm transition-all ${
-                        playbackRate === speed 
-                          ? 'bg-[#2a2a2a] text-[#D4C5A9]' 
+                    <button
+                      key={speed}
+                      onClick={() => setPlaybackRate(speed)}
+                      className={`flex-1 py-2.5 rounded text-sm transition-all ${playbackRate === speed
+                          ? 'bg-[#2a2a2a] text-[#D4C5A9]'
                           : 'bg-[#1a1a1a] text-[#888888] hover:bg-[#2a2a2a]'
-                      }`}
+                        }`}
                     >
                       {speed * 100}%
                     </button>
@@ -692,14 +694,14 @@ export default function EditorPage() {
                 </div>
               </div>
               <div className="flex gap-1">
-                <button 
-                  onClick={() => setLoopPoints(currentTime, loopEnd)} 
+                <button
+                  onClick={() => setLoopPoints(currentTime, loopEnd)}
                   className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟳ Set Start
                 </button>
-                <button 
-                  onClick={() => setLoopPoints(loopStart, currentTime)} 
+                <button
+                  onClick={() => setLoopPoints(loopStart, currentTime)}
                   className="flex-1 py-1 bg-[#1a1a1a] rounded text-sm text-[#FFFFF0] hover:bg-[#2a2a2a]"
                 >
                   ⟲ Set End
@@ -707,20 +709,20 @@ export default function EditorPage() {
               </div>
               <div className="flex gap-2">
                 <label className="flex items-center gap-1 text-sm text-[#FFFFF0] cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={highlightKeys} 
-                    onChange={(e) => setHighlightKeys(e.target.checked)} 
-                    className="w-3 h-3 accent-[#D4C5A9]" 
+                  <input
+                    type="checkbox"
+                    checked={highlightKeys}
+                    onChange={(e) => setHighlightKeys(e.target.checked)}
+                    className="w-3 h-3 accent-[#D4C5A9]"
                   />
                   Keys
                 </label>
                 <label className="flex items-center gap-1 text-sm text-[#FFFFF0] cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={showNoteNames} 
-                    onChange={(e) => setShowNoteNames(e.target.checked)} 
-                    className="w-3 h-3 accent-[#D4C5A9]" 
+                  <input
+                    type="checkbox"
+                    checked={showNoteNames}
+                    onChange={(e) => setShowNoteNames(e.target.checked)}
+                    className="w-3 h-3 accent-[#D4C5A9]"
                   />
                   Notes
                 </label>
