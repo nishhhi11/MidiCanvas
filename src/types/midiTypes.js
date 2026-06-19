@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-export default {};
-=======
 /*
 PURPOSE:
 A placeholder file for JSDoc or TypeScript type definitions regarding MIDI data structures.
@@ -19,4 +16,3 @@ FILE SUMMARY
 ========================================
 Purpose: Scaffolding for types.
 */
->>>>>>> 521e0ef (update)
