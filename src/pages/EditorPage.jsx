@@ -24,7 +24,7 @@ Container/Smart Component pattern.
 export default function EditorPage() {
   const { handlePlay, handlePause, handleStop, handleSeek } = usePlaybackController();
   const { setMidiData, setUploadedFile, uploadedFile, midiData, isParsing, setIsParsing, updateMidiMetadata, undo, redo, history } = useMidiStore();
-  const { clearMixer, masterVolume, setMasterVolume, soloedTracks, mutedTracks, trackVolumes, toggleMute, toggleSolo, setTrackVolume, trackColors } = useMixerStore();
+  const { clearMixer, masterVolume, setMasterVolume, soloedTracks, mutedTracks, trackVolumes, toggleMute, toggleSolo, setTrackVolume, trackColors, setTrackColor } = useMixerStore();
   const { playbackState, isLooping, toggleLoop, setIsLooping, playbackRate, setPlaybackRate, currentTime, loopStart, loopEnd, setLoopPoints } = usePlaybackStore();
   const { activeNotes: playbackActiveNotes } = usePlaybackStore();
   const { activeNotes: keyboardActiveNotes } = useKeyboardPiano();
@@ -74,7 +74,51 @@ export default function EditorPage() {
       });
       activeRecordingNotes.current.clear();
 
-    };
+      if (recordedNotes.current.length > 0) {
+        const sortedNotes = [...recordedNotes.current].sort((a, b) => a.time - b.time);
+        const trackDuration = Math.max(...sortedNotes.map(n => n.time + n.duration)) + 1;
+
+        const newMidiData = {
+          name: `Recording ${new Date().toLocaleString()}`,
+          tempo: 120,
+          trackCount: 1,
+          noteCount: sortedNotes.length,
+          duration: trackDuration,
+          timeSignature: "4/4",
+          notes: sortedNotes,
+          tracks: [{ id: 0, name: "Recorded Track", noteCount: sortedNotes.length }]
+        };
+
+        const { Midi } = await import('@tonejs/midi');
+        const newMidi = new Midi();
+        newMidi.header.setTempo(120);
+        const track = newMidi.addTrack();
+        track.name = "Recorded Track";
+        sortedNotes.forEach(note => {
+          track.addNote({
+            midi: note.midi,
+            time: note.time,
+            duration: note.duration,
+            velocity: note.velocity
+          });
+        });
+        const binary = newMidi.toArray();
+        if (binary) {
+          await saveFile(newMidiData, binary);
+          clearMixer();
+          setMidiData(newMidiData);
+          setUploadedFile(newMidiData.name);
+          usePlaybackStore.getState().setLoopPoints(0, trackDuration);
+          handleStop();
+        }
+      }
+    } else {
+      recordedNotes.current = [];
+      activeRecordingNotes.current.clear();
+      recordingStartTime.current = performance.now();
+      setIsRecording(true);
+    }
+  };
 
     const KEY_MAP = {
       'z': 'C3', 's': 'C#3', 'x': 'D3', 'd': 'D#3', 'c': 'E3', 'v': 'F3', 'g': 'F#3', 'b': 'G3', 'h': 'G#3', 'n': 'A3', 'j': 'A#3', 'm': 'B3',
@@ -842,4 +886,3 @@ export default function EditorPage() {
   1. When recording starts, we save the current `performance.now()` timestamp. Whenever a user presses a key, we log the key and another timestamp. On key release, we calculate the duration by subtracting the release time from the press time. We create a JSON note object and push it to a `useRef` array. When recording stops, we bundle the array into a new MIDI file object and save it to the Zustand store.
   2. We attach `onDragOver` and `onDrop` event handlers to the outermost `div`. `e.preventDefault()` prevents the browser from trying to open the file in a new tab. We grab the file from `e.dataTransfer.files[0]` and pass it to our existing `handleFileUpload` function.
   */
-}
