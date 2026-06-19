@@ -176,9 +176,6 @@ export default function EditorPage() {
     }
   };
 
-  /*
-  PURPOSE: Drag and drop file support.
-  */
   const handleDragOver = (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
